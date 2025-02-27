@@ -9,7 +9,7 @@ firebase-debug.*.log*
 
 # Firebase cache
 .firebase/
-
+.vscode/
 # Firebase config
 
 # Uncomment this if you'd like others to create their own Firebase project.
@@ -68,4 +68,4 @@ node_modules/
 # dataconnect generated files
 .dataconnect
 
-.vscode
+
