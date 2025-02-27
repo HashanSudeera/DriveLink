@@ -1,0 +1,86 @@
+<!-- Complete Project Details at: https://RandomNerdTutorials.com/ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP Firebase App</title>
+
+    <link rel="stylesheet" href="webstyle.css">
+   
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
+
+    <script>
+
+    
+    // REPLACE WITH YOUR web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyAa9bahojYMk_1meGG8YCgUDFNj6MEHPeI",
+      authDomain: "espclientsnew.firebaseapp.com",
+      databaseURL: "https://espclientsnew-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "espclientsnew",
+      storageBucket: "espclientsnew.firebasestorage.app",
+      messagingSenderId: "196283041268",
+      appId: "1:196283041268:web:6f24e1202238bf01fea5a1"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+    </script>
+<script src="app.js" defer></script>
+
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="navbar-logo">Driverlink</a>
+            <ul class="navbar-menu">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+
+            </ul>
+            <div class="navbar-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Body Section -->
+    <main class="main-content">
+        <section class="hero">
+            <h1>Welcome to Driverlink</h1>
+            <p>Smart Solutions</p>
+            <a href="register.html" class="btn">Get Started</a>
+        </section>
+        
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2025 TeraNode. All rights reserved.</p>
+            <ul class="footer-links">
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu Toggle -->
+    <script>
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navbarMenu = document.querySelector('.navbar-menu');
+
+        mobileMenu.addEventListener('click', () => {
+            navbarMenu.classList.toggle('active');
+        });
+    </script>
+    
+</body>
+</html>
