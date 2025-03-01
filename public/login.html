@@ -1,37 +1,24 @@
-<!-- Complete Project Details at: https://RandomNerdTutorials.com/ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP Firebase App</title>
-
+    <title>Login</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-
-
     <script src="app.js" defer></script>
-    <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
-    <div class="register-container">
+    <div class="login-container">
         <h1>DriveLink</h1>
         <h2>Login</h2>
-        <form class="form">
-        <div class="form-group">
+        <form>
             <input type="email" id="email" placeholder="Email" required>
-        </div>
-        <div class="form-group">
             <input type="password" id="password" placeholder="Password" required>
-        </div>
-        <button type="button" id="login-button">Login</button>
-        <p>Create New Account <a href="register.html">Register</a></p>
+            <button type="button" id="login-button">Login</button>
         </form>
-        <h4>©Team TeraNode</h4>
+        <p>Don't have an account? <a href="register.html">Register</a></p>
     </div>
-    
 </body>
 </html>
