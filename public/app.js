@@ -119,3 +119,27 @@ function loginUser(event) {
             alert("Login failed: " + error.message);
         });
 }
+   // Load sensor data
+   function loadSensorData(deviceId) {
+    const sensorRef = database.ref(deviceId);  // Reference to Firebase Realtime Database path for this device
+
+    // Listen for data changes in real-time
+    sensorRef.on("value", (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        document.getElementById("ultrasonic-value").innerText = `Distance: ${data.ultrasonic.value} cm`;
+        document.getElementById("led-status").innerText = `LED Status: ${data.led_status.value}`;
+      } else {
+        document.getElementById("ultrasonic-value").innerText = "No data available";
+        document.getElementById("led-status").innerText = "LED Status: --";
+      }
+    });
+  }
+
+  // Logout function
+  function logout() {
+    auth.signOut().then(() => {
+      document.getElementById('dashboard').classList.add('hidden');
+      document.getElementById('login-container').classList.remove('hidden');
+    });
+  }
