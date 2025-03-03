@@ -120,7 +120,7 @@ function loginUser(event) {
             const user = userCredential.user;
             console.log("User logged in:", user.uid);
             alert("Login successful! Redirecting...");
-            window.location.href = "dashboard.html"; // Redirect after login
+            window.location.href = "dashboard/dashboard.html"; // Redirect after login
         })
         .catch((error) => {
             console.error("Login error:", error.message);
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error("Error fetching user data:", error);
                 });
             } else {
-                window.location.href = "login.html";
+                window.location.href = "../login.html";
             }
         });
     }
@@ -173,7 +173,8 @@ function loadSensorData(deviceId) {
 
 function logout() {
     firebase.auth().signOut().then(() => {
-        window.location.href = "login.html";
+        window.location.href = "../login.html";
+        
     }).catch((error) => {
         console.error("Logout error:", error);
     });
