@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Get buttons after page loads
     const registerButton = document.getElementById('register-button');
     const loginButton = document.getElementById('login-button');
+    const logoutbutton = document.getElementById('logout-button')
 
     if (registerButton) {
         registerButton.addEventListener('click', register);
@@ -14,6 +15,13 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error("Login button not found! Check if the ID is correct.");
     }
+    if (logoutbutton) {
+        logoutbutton.addEventListener('click', logout);
+    }
+    else {
+        console.error("Logout button not found! Check if the ID is correct.");
+    }
+
 });
 
 // Firebase Configuration
@@ -118,4 +126,55 @@ function loginUser(event) {
             console.error("Login error:", error.message);
             alert("Login failed: " + error.message);
         });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (document.body.id === "dashboardPage") {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                const userId = user.uid;
+                const userRef = firebase.firestore().collection('users').doc(userId);
+
+                userRef.get().then((doc) => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        const deviceId = userData.deviceId;
+                        document.getElementById("device-id").innerText = deviceId;
+                        loadSensorData(deviceId);
+                    } else {
+                        console.error("User data not found in Firestore.");
+                    }
+                }).catch((error) => {
+                    console.error("Error fetching user data:", error);
+                });
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+    }
+    else {
+        console.log("not dashboard page")
+    }
+});
+
+function loadSensorData(deviceId) {
+    const sensorRef = firebase.database().ref(deviceId);
+    sensorRef.on("value", (snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            document.getElementById("ultrasonic-value").innerText = `Distance: ${data.ultrasonic.value} cm`;
+            document.getElementById("led-status").innerText = `LED Status: ${data.led_status.value}`;
+        } else {
+            document.getElementById("ultrasonic-value").innerText = "No data available";
+            document.getElementById("led-status").innerText = "LED Status: --";
+        }
+    });
+}
+
+function logout() {
+    firebase.auth().signOut().then(() => {
+        window.location.href = "login.html";
+    }).catch((error) => {
+        console.error("Logout error:", error);
+    });
 }
