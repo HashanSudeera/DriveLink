@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerButton = document.getElementById('register-button');
     const loginButton = document.getElementById('login-button');
     const logoutbutton = document.getElementById('logout-button')
+    const googleSignInButton = document.getElementById('google-signin-button');
 
     if (registerButton) {
         registerButton.addEventListener('click', register);
@@ -17,6 +18,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (logoutbutton) {
         logoutbutton.addEventListener('click', logout);
+    }
+    if (googleSignInButton) {
+        googleSignInButton.addEventListener('click', signInWithGoogle);
     }
     else {
         console.error("Logout button not found! Check if the ID is correct.");
@@ -179,3 +183,87 @@ function logout() {
         console.error("Logout error:", error);
     });
 }
+// 🔹 Function to Sign in with Google
+function signInWithGoogle() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+            const user = result.user;
+
+            // Check if user already exists in Firestore
+            return db.collection('users').doc(user.uid).get()
+                .then((doc) => {
+                    if (!doc.exists) {
+                        // If user does not exist, collect additional details
+                        const username = prompt("Enter a username:");
+                        const deviceId = prompt("Enter your device ID:");
+                        const vehicleType = prompt("Enter your vehicle type (motorcycle, van, car, lorry):");
+                        const vehicleModel = prompt("Enter your vehicle model:");
+                        const mileage = prompt("Enter your vehicle mileage:");
+
+                        return db.collection('users').doc(user.uid).set({
+                            username,
+                            email: user.email,
+                            deviceId,
+                            vehicleType,
+                            vehicleModel,
+                            mileage,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                });
+        })
+        .then(() => {
+            alert("Google Sign-In successful! Redirecting...");
+            window.location.href = "dashboard/dashboard.html";
+        })
+        .catch((error) => {
+            alert("Google Sign-In failed: " + error.message);
+        });
+}
+
+// Google Sign-In function
+function googleSignIn() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            const user = result.user;
+            console.log("Google Sign-In successful:", user);
+
+            // Check if user exists in Firestore
+            const userRef = db.collection('users').doc(user.uid);
+            return userRef.get().then((doc) => {
+                if (!doc.exists) {
+                    // If user doesn't exist, store data
+                    const userData = {
+                        username: user.displayName || "Google User",
+                        email: user.email,
+                        deviceId: "N/A",
+                        vehicleType: "N/A",
+                        vehicleModel: "N/A",
+                        mileage: "N/A",
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+
+                    return userRef.set(userData);
+                }
+            });
+        })
+        .then(() => {
+            alert("Login successful! Redirecting...");
+            window.location.href = "dashboard/dashboard.html";
+        })
+        .catch((error) => {
+            console.error("Google Sign-In failed:", error.message);
+            alert("Google Sign-In failed: " + error.message);
+        });
+}
+
+// Add event listener for Google Login button
+document.addEventListener("DOMContentLoaded", function () {
+    const googleLoginButton = document.getElementById("google-login-button");
+    if (googleLoginButton) {
+        googleLoginButton.addEventListener("click", googleSignIn);
+    }
+});
