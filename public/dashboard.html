@@ -1,133 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
-<body>
+
+<body id="dashboardPage">
     <div class="dashboard-container">
         <h1>Welcome to the Dashboard</h1>
         <h2>Your Device ID: <span id="device-id"></span></h2>
         <p id="ultrasonic-value">Distance: -- cm</p>
         <p id="led-status">LED Status: --</p>
-        <button onclick="logout()">Logout</button>
+        <button type="button" id="logout-button">Logout</button>
     </div>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            firebase.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    const userId = user.uid;
-                    const userRef = firebase.firestore().collection('users').doc(userId);
-                    
-                    userRef.get().then((doc) => {
-                        if (doc.exists) {
-                            const userData = doc.data();
-                            const deviceId = userData.deviceId;
-                            document.getElementById("device-id").innerText = deviceId;
-                            loadSensorData(deviceId);
-                        } else {
-                            console.error("User data not found in Firestore.");
-                        }
-                    }).catch((error) => {
-                        console.error("Error fetching user data:", error);
-                    });
-                } else {
-                    window.location.href = "login.html";
-                }
-            });
-        });
 
-        function loadSensorData(deviceId) {
-            const sensorRef = firebase.database().ref(deviceId);
-            sensorRef.on("value", (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    document.getElementById("ultrasonic-value").innerText = `Distance: ${data.ultrasonic.value} cm`;
-                    document.getElementById("led-status").innerText = `LED Status: ${data.led_status.value}`;
-                } else {
-                    document.getElementById("ultrasonic-value").innerText = "No data available";
-                    document.getElementById("led-status").innerText = "LED Status: --";
-                }
-            });
-        }
 
-        function logout() {
-            firebase.auth().signOut().then(() => {
-                window.location.href = "login.html";
-            }).catch((error) => {
-                console.error("Logout error:", error);
-            });
-        }
-    </script>
-    <script>
-    // Firebase Configuration
-    var firebaseConfig = {
-        apiKey: "AIzaSyAa9bahojYMk_1meGG8YCgUDFNj6MEHPeI",
-        authDomain: "espclientsnew.firebaseapp.com",
-        databaseURL: "https://espclientsnew-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "espclientsnew",
-        storageBucket: "espclientsnew.firebasestorage.app",
-        messagingSenderId: "196283041268",
-        appId: "1:196283041268:web:6f24e1202238bf01fea5a1"
-    };
-
-    // Initialize Firebase
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                const userId = user.uid;
-                const userRef = firebase.firestore().collection('users').doc(userId);
-
-                userRef.get().then((doc) => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        const deviceId = userData.deviceId;
-                        document.getElementById("device-id").innerText = deviceId;
-                        loadSensorData(deviceId);
-                    } else {
-                        console.error("User data not found in Firestore.");
-                    }
-                }).catch((error) => {
-                    console.error("Error fetching user data:", error);
-                });
-            } else {
-                window.location.href = "login.html";
-            }
-        });
-    });
-
-    function loadSensorData(deviceId) {
-        const sensorRef = firebase.database().ref(deviceId);
-        sensorRef.on("value", (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                document.getElementById("ultrasonic-value").innerText = `Distance: ${data.ultrasonic.value} cm`;
-                document.getElementById("led-status").innerText = `LED Status: ${data.led_status.value}`;
-            } else {
-                document.getElementById("ultrasonic-value").innerText = "No data available";
-                document.getElementById("led-status").innerText = "LED Status: --";
-            }
-        });
-    }
-
-    function logout() {
-        firebase.auth().signOut().then(() => {
-            window.location.href = "login.html";
-        }).catch((error) => {
-            console.error("Logout error:", error);
-        });
-    }
-</script>
 
 </body>
+
 </html>
