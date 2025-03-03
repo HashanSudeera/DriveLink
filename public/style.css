@@ -8,11 +8,12 @@
 
 body {
     font-family: "Poppins", serif;
-    background :linear-gradient(135deg,#06e690,#1b1b1b);
+    background: linear-gradient(135deg, #06e690, #1b1b1b);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* depent size*/
+    height: 100vh;
+    /* depent size*/
 }
 
 .register-container {
@@ -33,6 +34,7 @@ body {
     text-align: center;
     margin-bottom: 5px;
 }
+
 .register-container h4 {
     text-align: center;
     margin-bottom: 5px;
