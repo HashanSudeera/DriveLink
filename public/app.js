@@ -139,7 +139,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (doc.exists) {
                         const userData = doc.data();
                         const deviceId = userData.deviceId;
+                        const username = userData.username;
                         document.getElementById("device-id").innerText = deviceId;
+                        document.getElementById("usernametag").innerText = username;
                         loadSensorData(deviceId);
                     } else {
                         console.error("User data not found in Firestore.");
@@ -174,7 +176,7 @@ function loadSensorData(deviceId) {
 function logout() {
     firebase.auth().signOut().then(() => {
         window.location.href = "../login.html";
-        
+
     }).catch((error) => {
         console.error("Logout error:", error);
     });
