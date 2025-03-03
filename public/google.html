@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Registration</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="app.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="register-container">
+        <h1>DriveLink</h1>
+        <h2>Complete Your Registration</h2>
+        <form id="google-register-form">
+            <div class="form-group">
+                <input type="text" id="username" placeholder="Username" required>
+            </div>
+            <div class="form-group">
+                <input type="text" id="device-id" placeholder="Device ID" required>
+            </div>
+            <div class="form-group">
+                <select id="vehicle-type">
+                    <option value="motorcycle">Motorcycle</option>
+                    <option value="van">Van</option>
+                    <option value="car">Car</option>
+                    <option value="lorry">Lorry</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select id="vehicle-model">
+                    <option value="modelA">Model A</option>
+                    <option value="modelB">Model B</option>
+                    <option value="modelC">Model C</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="number" id="mileage" placeholder="Mileage (km)" required>
+            </div>
+            
+            
+        </form>
+        <div class="form-group">
+            <button id="complete-registration-button">Complete Registration</button>
+        </div>
+        <h4>©Team TeraNode</h4>
+    </div>
+</body>
+</html>

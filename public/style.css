@@ -95,3 +95,37 @@ button:hover {
         font-size: 14px;
     }
 }
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center horizontally */
+    margin-top: -25px;
+  }
+  .login-container1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center horizontally */
+
+  }
+
+  #google-login-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px; /* Add spacing */
+  }
+
+  #google-login-button img {
+    width: 16px;
+    height: 16px;
+  }
+
+  
