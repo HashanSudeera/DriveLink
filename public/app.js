@@ -1,3 +1,4 @@
+// Ensure DOM is loaded before executing scripts
 document.addEventListener("DOMContentLoaded", function () {
     // Get buttons after page loads
     const registerButton = document.getElementById('register-button');
@@ -14,10 +15,36 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error("Login button not found! Check if the ID is correct.");
     }
+
+    // Monitor authentication state
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            const userId = user.uid;
+            const userRef = db.collection('users').doc(userId);
+
+            userRef.get().then((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    if (document.getElementById("device-id")) {
+                        document.getElementById("device-id").innerText = userData.deviceId;
+                    }
+                    loadSensorData(userData.deviceId);
+                } else {
+                    console.error("User data not found in Firestore.");
+                }
+            }).catch((error) => {
+                console.error("Error fetching user data:", error);
+            });
+        } else {
+            if (window.location.pathname !== "/login.html") {
+                window.location.href = "login.html";
+            }
+        }
+    });
 });
 
 // Firebase Configuration
-var firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyAa9bahojYMk_1meGG8YCgUDFNj6MEHPeI",
     authDomain: "espclientsnew.firebaseapp.com",
     databaseURL: "https://espclientsnew-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -27,14 +54,14 @@ var firebaseConfig = {
     appId: "1:196283041268:web:6f24e1202238bf01fea5a1"
 };
 
-// Initialize Firebase
+// Initialize Firebase (only if not already initialized)
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
 // Initialize Firestore and Realtime Database
-var db = firebase.firestore();
-var database = firebase.database();
+const db = firebase.firestore();
+const database = firebase.database();
 
 // 🛠 Function to Register User
 function register(event) {
@@ -119,27 +146,50 @@ function loginUser(event) {
             alert("Login failed: " + error.message);
         });
 }
-   // Load sensor data
-   function loadSensorData(deviceId) {
-    const sensorRef = database.ref(deviceId);  // Reference to Firebase Realtime Database path for this device
+   function dashboarddata() {
+    document.addEventListener("DOMContentLoaded", function () {
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            const userId = user.uid;
+            const userRef = firebase.firestore().collection('users').doc(userId);
+            
+            userRef.get().then((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    const deviceId = userData.deviceId;
+                    document.getElementById("device-id").innerText = deviceId;
+                    loadSensorData(deviceId);
+                } else {
+                    console.error("User data not found in Firestore.");
+                }
+            }).catch((error) => {
+                console.error("Error fetching user data:", error);
+            });
+        } else {
+            window.location.href = "login.html";
+        }
+    });
+});
 
-    // Listen for data changes in real-time
+function loadSensorData(deviceId) {
+    const sensorRef = firebase.database().ref(deviceId);
     sensorRef.on("value", (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        document.getElementById("ultrasonic-value").innerText = `Distance: ${data.ultrasonic.value} cm`;
-        document.getElementById("led-status").innerText = `LED Status: ${data.led_status.value}`;
-      } else {
-        document.getElementById("ultrasonic-value").innerText = "No data available";
-        document.getElementById("led-status").innerText = "LED Status: --";
-      }
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            document.getElementById("ultrasonic-value").innerText = `Distance: ${data.ultrasonic.value} cm`;
+            document.getElementById("led-status").innerText = `LED Status: ${data.led_status.value}`;
+        } else {
+            document.getElementById("ultrasonic-value").innerText = "No data available";
+            document.getElementById("led-status").innerText = "LED Status: --";
+        }
     });
-  }
+}
 
-  // Logout function
-  function logout() {
-    auth.signOut().then(() => {
-      document.getElementById('dashboard').classList.add('hidden');
-      document.getElementById('login-container').classList.remove('hidden');
+function logout() {
+    firebase.auth().signOut().then(() => {
+        window.location.href = "login.html";
+    }).catch((error) => {
+        console.error("Logout error:", error);
     });
-  }
+}
+   }
