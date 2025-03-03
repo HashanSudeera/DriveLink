@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Login button not found! Check if the ID is correct.");
     }
     if (logoutbutton) {
-        logoutbutton.addEventListener('click', logout)
+        logoutbutton.addEventListener('click', logout);
     }
     else {
         console.error("Logout button not found! Check if the ID is correct.");
