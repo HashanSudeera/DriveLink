@@ -1,38 +1,23 @@
-<!-- Complete Project Details at: https://RandomNerdTutorials.com/ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP Firebase App</title>
-
-    <!-- firebase SDK -->
+    <title>Complete Registration</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-
-    
-    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="app.js" defer></script>
-
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="register-container">
         <h1>DriveLink</h1>
-        <h2>Register</h2>
-        <form class="form">
+        <h2>Complete Your Registration</h2>
+        <form id="google-register-form">
             <div class="form-group">
                 <input type="text" id="username" placeholder="Username" required>
-            </div>
-            <div class="form-group">
-                <input type="email" id="email" placeholder="Email" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="password" placeholder="Password" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="confirm-password" placeholder="Confirm-password" required>
             </div>
             <div class="form-group">
                 <input type="text" id="device-id" placeholder="Device ID" required>
@@ -44,7 +29,6 @@
                     <option value="car">Car</option>
                     <option value="lorry">Lorry</option>
                 </select>
-                
             </div>
             <div class="form-group">
                 <select id="vehicle-model">
@@ -56,23 +40,8 @@
             <div class="form-group">
                 <input type="number" id="mileage" placeholder="Mileage (km)" required>
             </div>
-
-            <button type="button" id="register-button">Register</button>
-            
-
-
-            <p>Already have an account? <a href="login.html">Login here</a></p>
-            
+            <button id="complete-registration-button">Complete Registration</button>
         </form>
-        <button type="button" id="google-login-button">Sign in with Google</button>
-
-
-        
-        <h4>©Team TeraNode</h4>
     </div>
-    
-
-
-    
 </body>
 </html>

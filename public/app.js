@@ -3,7 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerButton = document.getElementById('register-button');
     const loginButton = document.getElementById('login-button');
     const logoutbutton = document.getElementById('logout-button')
-    const googleSignInButton = document.getElementById('google-signin-button');
+    const googleLoginButton = document.getElementById('google-login-button');
+    const completeRegButton  = document.getElementById('complete-registration-button');
+    const googlesiginButton  = document.getElementById('google-singin-button');
 
     if (registerButton) {
         registerButton.addEventListener('click', register);
@@ -19,14 +21,21 @@ document.addEventListener("DOMContentLoaded", function () {
     if (logoutbutton) {
         logoutbutton.addEventListener('click', logout);
     }
-    if (googleSignInButton) {
-        googleSignInButton.addEventListener('click', signInWithGoogle);
+    if (googleLoginButton) {
+        googleLoginButton.addEventListener('click', googleLogin);
+    }
+    if (googlesiginButton) {
+        googlesiginButton.addEventListener('click', googlein);
+    }
+    if (completeRegButton) {
+        completeRegButton.addEventListener('click', completeGoogleRegistration);
     }
     else {
         console.error("Logout button not found! Check if the ID is correct.");
     }
 
 });
+
 
 // Firebase Configuration
 var firebaseConfig = {
@@ -267,3 +276,109 @@ document.addEventListener("DOMContentLoaded", function () {
         googleLoginButton.addEventListener("click", googleSignIn);
     }
 });
+// Google Sign-In
+function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+            const user = result.user;
+            console.log("Google login success:", user.uid);
+
+            // Check if user exists in Firestore
+            const userRef = db.collection("users").doc(user.uid);
+            userRef.get().then((doc) => {
+                if (doc.exists) {
+                    console.log("User exists, redirecting to dashboard...");
+                    window.location.href = "dashboard/dashboard.html"; 
+                } else {
+                    console.log("New user, redirecting to complete profile...");
+                    window.location.href = "google.html";
+                }
+            });
+        })
+        .catch((error) => {
+            console.error("Google Login Error:", error.message);
+            alert("Google Login Failed: " + error.message);
+        });
+}
+function completeGoogleRegistration(event) {
+    event.preventDefault();
+
+    const user = firebase.auth().currentUser;
+    if (!user) {
+        alert("User not logged in!");
+        return;
+    }
+
+    const username = document.getElementById('username').value.trim();
+    const deviceId = document.getElementById('device-id').value.trim();
+    const vehicleType = document.getElementById('vehicle-type').value.trim();
+    const vehicleModel = document.getElementById('vehicle-model').value.trim();
+    const mileage = document.getElementById('mileage').value.trim();
+
+    if (!username || !deviceId) {
+        alert("Please fill in all required fields.");
+        return;
+    }
+
+    const userData = {
+        username,
+        email: user.email,
+        deviceId,
+        vehicleType,
+        vehicleModel,
+        mileage,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    // Save user data in Firestore
+    db.collection("users").doc(user.uid).set(userData)
+        .then(() => {
+            console.log("User data saved to Firestore.");
+            alert("Registration completed! Redirecting to dashboard...");
+            window.location.href = "dashboard/dashboard.html"; 
+        })
+        .catch((error) => {
+            console.error("Error saving user data:", error);
+            alert("Error: " + error.message);
+        });
+}
+document.addEventListener("DOMContentLoaded", function () {
+    const googleLoginButton = document.getElementById("google-login-button");
+
+    if (googleLoginButton) {
+        googleLoginButton.addEventListener("click", signInWithGoogle);
+    }
+});
+// Google Sign-In function
+function googlein() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+            const user = result.user;
+            console.log("Google login success:", user.uid);
+
+            // Check if Firestore is properly initialized before accessing db
+            if (db) {
+                const userRef = db.collection("users").doc(user.uid);
+                userRef.get().then((doc) => {
+                    if (doc.exists) {
+                        console.log("User exists, redirecting to dashboard...");
+                        window.location.href = "dashboard/dashboard.html"; 
+                    } else {
+                        console.log("New user, redirecting to complete profile...");
+                        window.location.href = "google.html";
+                    }
+                }).catch((error) => {
+                    console.error("Error getting user data from Firestore:", error);
+                });
+            } else {
+                console.error("Firestore not initialized!");
+            }
+        })
+        .catch((error) => {
+            console.error("Google Login Error:", error.message);
+            alert("Google Login Failed: " + error.message);
+        });
+}
+
