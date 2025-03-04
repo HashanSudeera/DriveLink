@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const loginButton = document.getElementById('login-button');
     const logoutbutton = document.getElementById('logout-button')
     const googleLoginButton = document.getElementById('google-login-button');
-    const completeRegButton  = document.getElementById('complete-registration-button');
-    const googlesiginButton  = document.getElementById('google-singin-button');
+    const completeRegButton = document.getElementById('complete-registration-button');
+    const googlesiginButton = document.getElementById('google-singin-button');
 
     if (registerButton) {
         registerButton.addEventListener('click', register);
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         const deviceId = userData.deviceId;
                         const username = userData.username;
                         document.getElementById("device-id").innerText = deviceId;
-                        document.getElementById("usernametag").innerText = username;
+                        document.getElementById("usernametag").innerText = `Hi, ${username} !`;
                         loadSensorData(deviceId);
                     } else {
                         console.error("User data not found in Firestore.");
@@ -290,7 +290,7 @@ function googleLogin() {
             userRef.get().then((doc) => {
                 if (doc.exists) {
                     console.log("User exists, redirecting to dashboard...");
-                    window.location.href = "dashboard/dashboard.html"; 
+                    window.location.href = "dashboard/dashboard.html";
                 } else {
                     console.log("New user, redirecting to complete profile...");
                     window.location.href = "google.html";
@@ -337,7 +337,7 @@ function completeGoogleRegistration(event) {
         .then(() => {
             console.log("User data saved to Firestore.");
             alert("Registration completed! Redirecting to dashboard...");
-            window.location.href = "dashboard/dashboard.html"; 
+            window.location.href = "dashboard/dashboard.html";
         })
         .catch((error) => {
             console.error("Error saving user data:", error);
@@ -365,7 +365,7 @@ function googlein() {
                 userRef.get().then((doc) => {
                     if (doc.exists) {
                         console.log("User exists, redirecting to dashboard...");
-                        window.location.href = "dashboard/dashboard.html"; 
+                        window.location.href = "dashboard/dashboard.html";
                     } else {
                         console.log("New user, redirecting to complete profile...");
                         window.location.href = "google.html";

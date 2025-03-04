@@ -4,8 +4,8 @@
     --base-clr: #11121a;
     --line-clr: #42434a;
     --hover-clr: #222533;
-    --text-clr: #e6e6ef;
-    --accent-clr: #00ff9d;
+    --text-clr: #EEEEEE;
+    --accent-clr: #C4FB6D;
     --secondary-text-clr: #b0b3c1;
 }
 
@@ -178,7 +178,7 @@ main p {
     }
 
     main {
-        padding: 2em 1em 60px 1em;
+        padding: 1em 1em 60px 1em;
     }
 
     .container {
@@ -268,4 +268,134 @@ main p {
 
 .logout_but:hover {
     background-color: #06e690;
+}
+
+.title-container {
+    margin-bottom: 20px;
+    padding: min(1.5em, 15%);
+    text-align: center;
+    color: #EEEEEE;
+    border-bottom: 1px solid #C4FB6D;
+    padding-bottom: 0px;
+    padding-top: 0px;
+
+    h2,
+    p {
+        margin-top: 0.2em
+    }
+
+
+}
+
+.highlight {
+    color: #C4FB6D;
+}
+
+
+
+/*battery style*/
+:root {
+    --red: #ff0000;
+    --orange: #ff9100;
+    --yellow: #fff200;
+    --yellow-green: #d7fc03;
+    --green: #00ff00;
+    --body: #607d8b;
+    --gray: #9e9e9e;
+    --white: #ffffff;
+}
+
+
+.battery {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.battery-head {
+    width: 40px;
+    height: 15px;
+    background: var(--white);
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+}
+
+.battery-body {
+    width: 100px;
+    height: 200px;
+    background: transparent;
+    position: relative;
+    margin: 0 auto;
+    border: 4px solid var(--white);
+    border-radius: 18px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+}
+
+i.fa-bolt {
+    color: var(--white);
+    font-size: 40px;
+    position: absolute;
+    left: 38%;
+    top: 40%;
+    z-index: 1;
+    animation: battery-bolt 2s linear infinite;
+}
+
+.charge {
+    width: 100%;
+    height: 0%;
+    position: absolute;
+    bottom: 0;
+    border-radius: 0 0 12px 12px;
+    transition: height 0.5s ease, background 0.5s ease;
+}
+
+/* Battery bolt icon animation */
+@keyframes battery-bolt {
+    50% {
+        transform: scale(1.3);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Input styling */
+input {
+    margin-top: 20px;
+    width: 150px;
+}
+
+p {
+    color: var(--white);
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.battery-container {
+    border: 1px solid var(--line-clr);
+    border-radius: 1em;
+    margin-bottom: 20px;
+    padding: min(3em, 15%);
+
+
+    h2,
+    p {
+        margin-top: -30px;
+        margin-bottom: 40px;
+    }
+
+}
+
+.battery {
+    h2 {
+        text-align: center;
+        padding-top: 120px;
+        color: var(--secondary-text-clr);
+
+    }
+
 }
