@@ -6,12 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="dashboardstyle.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="../app.js"></script>
     <script src="dashboard.js" defer></script>
+    
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
 </head>
 
 <body id="dashboardPage">
@@ -142,7 +147,90 @@
             <h1>Space for Intraduse live tracking</h1>
             <p>add map </p>
         </div>
+        <div>
+            <h1 class="text-3xl font-bold mb-4">Vehicle Trip Tracker</h1>
+            <div class="flex gap-4 mb-4">
+                <button id="startTrip" class="bg-green-500 text-white px-4 py-2 rounded">Start Trip</button>
+                <button id="endTrip" class="bg-red-500 text-white px-4 py-2 rounded">End Trip</button>
+            </div>
+            <div id="map" class="w-full h-96 rounded-lg shadow-md mb-4"></div>
+            <div class="bg-white p-4 rounded-lg shadow-md w-full max-w-md text-center">
+                <p><strong>Current Speed:</strong> <span id="speed">0</span> km/h</p>
+                <p><strong>Max Speed:</strong> <span id="maxSpeed">0</span> km/h</p>
+                <p><strong>Min Speed:</strong> <span id="minSpeed">0</span> km/h</p>
+                <p><strong>Distance Traveled:</strong> <span id="distance">0</span> km</p>
+                <p><strong>Elapsed Time:</strong> <span id="elapsedTime">0</span> s</p>
+                <p><strong>Stop Duration:</strong> <span id="stopDuration">0</span> s</p>
+            </div>
+            <script type="module">
+                import { ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+                
+                let tripActive = false;
+                let route;
+                let marker, startTime, totalDistance = 0, maxSpeed = 0, minSpeed = Infinity;
+        
+                // Initialize map
+                const map = L.map('map').setView([0, 0], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+                route = L.polyline([], { color: 'blue' }).addTo(map);
+        
+                // Listen for GPS updates
+                let prevLatLng = null;
+                onValue(ref(db, 'gps-data'), snapshot => {
+                    const data = snapshot.val();
+                    if (data && tripActive) {
+                        const { latitude, longitude, speed } = data;
+                        const currentLatLng = [latitude, longitude];
+                        
+                        map.setView(currentLatLng, 13);
+                        route.addLatLng(currentLatLng);
+                        if (marker) map.removeLayer(marker);
+                        marker = L.marker(currentLatLng).addTo(map);
+                        
+                        document.getElementById('speed').textContent = speed;
+                        maxSpeed = Math.max(maxSpeed, speed);
+                        minSpeed = Math.min(minSpeed, speed);
+                        document.getElementById('maxSpeed').textContent = maxSpeed;
+                        document.getElementById('minSpeed').textContent = minSpeed;
+        
+                        if (prevLatLng) {
+                            const distance = getDistance(prevLatLng, currentLatLng);
+                            totalDistance += distance;
+                            document.getElementById('distance').textContent = totalDistance.toFixed(2);
+                        }
+                        prevLatLng = currentLatLng;
+                    }
+                });
+        
+                function getDistance([lat1, lon1], [lat2, lon2]) {
+                    const R = 6371;
+                    const dLat = (lat2 - lat1) * Math.PI / 180;
+                    const dLon = (lon2 - lon1) * Math.PI / 180;
+                    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                    return R * c;
+                }
+        
+                document.getElementById('startTrip').addEventListener('click', () => {
+                    tripActive = true;
+                    startTime = Date.now();
+                    totalDistance = 0;
+                    maxSpeed = 0;
+                    minSpeed = Infinity;
+                    route.setLatLngs([]);
+                    document.getElementById('elapsedTime').textContent = '0';
+                    document.getElementById('stopDuration').textContent = '0';
+                });
+        
+                document.getElementById('endTrip').addEventListener('click', () => {
+                    tripActive = false;
+                    const totalTime = ((Date.now() - startTime) / 1000).toFixed(2);
+                    document.getElementById('elapsedTime').textContent = totalTime;
+                });
+            </script>
+        </div>
     </main>
+
 
 
 </body>
