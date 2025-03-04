@@ -138,16 +138,37 @@
             <h1>Drive<span class="highlight">Link</span></h1>
             <p>Battery Status</p>
         </div>
-        <h2>Battery</h2>
-        <div class="battery">
+        <div class="main-container">
+            <div class="box">
+                <div class="battery">
+                    <h2 style="color: #eeeeee;">Battery</h2><br>
 
-            <div class="battery-head"></div>
-            <div class="battery-body">
-                <i class="fas fa-bolt"></i>
-                <div class="charge"></div>
+                    <div class="battery-head"></div>
+                    <div class="battery-body">
+                        <i class="fas fa-bolt"></i>
+                        <div class="charge"></div>
+                    </div>
+                    <p id="battery-percentage">Battery: 0%</p>
+                    <input type="range" min="0" max="100" value="0" id="battery-slider">
+
+                </div>
             </div>
-            <p id="battery-percentage">Battery: 0%</p>
-            <input type="range" min="0" max="100" value="0" id="battery-slider">
+            <div class="box">
+                <div class="fuel-details">
+                    <h2>Battery Details</h2>
+                    <div class="sub-cal">
+                        <p>Battery Helth : </p>
+                        <p>Battery Power (W) : </p>
+                        <p>Estimated Battery Life : </p>
+                        <p>Battery Charging Time : </p>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+        </div>
     </main>
 
 

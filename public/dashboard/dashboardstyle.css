@@ -416,22 +416,19 @@ p {
     justify-content: center;
     align-items: center;
     text-align: center;
-    display: flex;
     flex-direction: column;
+    background: transparent;
 
-    padding: -10%;
-
-
-
+    left: -20px;
 
 
-}
 
-.status-text p {
-    text-align: left;
-    color: rgb(255, 255, 255);
+
+
+
 
 }
+
 
 .fuel-container {
 
@@ -527,4 +524,17 @@ p {
         margin-top: 1em
     }
 
+}
+
+
+
+.fuel-details {
+    text-align: left;
+    margin-top: 80px;
+    width: 250px;
+
+}
+
+.sub-cal {
+    text-align: left;
 }
