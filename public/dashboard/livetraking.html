@@ -15,25 +15,55 @@
     <script src="../app.js"></script>
     <script src="dashboard.js" defer></script>
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-        import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import L from "https://unpkg.com/leaflet/dist/leaflet.js";
 
-        var firebaseConfig = {
-            apiKey: "AIzaSyAa9bahojYMk_1meGG8YCgUDFNj6MEHPeI",
-            authDomain: "espclientsnew.firebaseapp.com",
-            databaseURL: "https://espclientsnew-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "espclientsnew",
-            storageBucket: "espclientsnew.firebasestorage.app",
-            messagingSenderId: "196283041268",
-            appId: "1:196283041268:web:6f24e1202238bf01fea5a1"
-        };
+        // Initialize Leaflet map
+        const map = L.map('map').setView([0, 0], 13); // Set initial map view (coordinates can be updated)
         
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-    </script>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
+        // Create a marker to update vehicle location
+        const vehicleMarker = L.marker([0, 0]).addTo(map); // Start with dummy coordinates (0, 0)
+
+        // Real-time location update
+        const locationRef = ref(db, 'vehicle/location'); // Firebase reference for vehicle location
+
+        // Function to update the map with new vehicle location
+        onValue(locationRef, (snapshot) => {
+            const locationData = snapshot.val();
+            if (locationData) {
+                const { latitude, longitude } = locationData;
+
+                // Update the marker position
+                vehicleMarker.setLatLng([latitude, longitude]);
+
+                // Update the map view to center on the vehicle location
+                map.setView([latitude, longitude], 13);
+
+                // Optionally, you can update speed or other data
+                // document.getElementById("speed").textContent = locationData.speed;
+            }
+        });
+
+        // Example of sending GPS data to Firebase (to simulate a real-world scenario)
+        // This is to be replaced with actual GPS data collection logic in the vehicle
+        setInterval(() => {
+            const simulatedLocation = {
+                latitude: 37.7749 + Math.random() * 0.01, // Random offset to simulate movement
+                longitude: -122.4194 + Math.random() * 0.01
+            };
+
+            // Push location to Firebase (replace with actual GPS data)
+            firebase.database().ref('vehicle/location').set(simulatedLocation);
+        }, 5000); // Update every 5 seconds for simulation
+    </script>
+   <script src="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 
 <body id="dashboardPage">
@@ -161,8 +191,8 @@
             <p>Live Tracking</p>
         </div>
         <div class="container">
-            <h1>Space for Intraduse live tracking</h1>
-            <p>add map </p>
+            <h1>Space for Introducing live tracking</h1>
+            <p>Add map</p>
         </div>
         <div>
             <h1 class="text-3xl font-bold mb-4">Vehicle Trip Tracker</h1>
@@ -179,68 +209,8 @@
                 <p><strong>Elapsed Time:</strong> <span id="elapsedTime">0</span> s</p>
                 <p><strong>Stop Duration:</strong> <span id="stopDuration">0</span> s</p>
             </div>
-            <script type="module">
-                import { ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
-                
-                let tripActive = false;
-                let route;
-                let marker, startTime, totalDistance = 0, maxSpeed = 0, minSpeed = Infinity;
-        
-                // Initialize Leaflet map
-                    const map = L.map('map').setView([0, 0], 13);  // Set to a default view
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    }).addTo(map);
-
-                    // Initialize Firebase Realtime Database
-                    const dbRef = ref(db, 'gps-data');  // Adjust path as needed
-
-                    // To store the trip status
-                    let tripStarted = false;
-                    let tripPath = [];
-
-                    function updateMap(lat, lon) {
-                        if (!tripStarted) return;
-                        
-                        const newLocation = [lat, lon];
-                        
-                        // Update the map view
-                        map.setView(newLocation, 13);
-                        
-                        // Add marker and polyline for path
-                        L.marker(newLocation).addTo(map);
-                        tripPath.push(newLocation);
-                        
-                        // Draw the polyline
-                        L.polyline(tripPath, { color: 'blue' }).addTo(map);
-                    }
-
-                    // Fetch GPS data from Firebase
-                    onValue(dbRef, (snapshot) => {
-                        const data = snapshot.val();
-                        if (data) {
-                            updateMap(80.335346,37.7749);
-                        }
-                    });
-
-                    // Event listeners for Start and End Trip buttons
-                    document.getElementById('startTrip').addEventListener('click', () => {
-                        tripStarted = true;
-                        tripPath = [];  // Reset the path for the new trip
-                        alert('Trip started');
-                    });
-
-                    document.getElementById('endTrip').addEventListener('click', () => {
-                        tripStarted = false;
-                        alert('Trip ended');
-                    });
-
-            </script>
         </div>
     </main>
-
-
-
 </body>
 
 </html>
