@@ -138,26 +138,41 @@
             <h1>Drive<span class="highlight">Link</span></h1>
             <p>Dashboard</p>
         </div>
-        <div class="container">
-            <div class="container1">
-                <h2>Fuel Monitor</h2><br>
+        <div class="main-container">
+            <div class="box">
+                <div class="container1">
+                    <h2>Fuel Monitor</h2><br>
 
-                <div class="fuel-container">
-                    <div class="water" id="waterLevel">
-                        <div class="wave"></div>
-                        <div class="wave"></div>
+                    <div class="fuel-container">
+                        <div class="water" id="waterLevel">
+                            <div class="wave"></div>
+                            <div class="wave"></div>
+                        </div>
+                        <span class="fuel-text" id="fuelText">0%</span>
                     </div>
-                    <span class="fuel-text" id="fuelText">0%</span>
-                </div>
 
-                <div class="status-text">
-                    <p>Fule Level (L) &nbsp;&nbsp;: </p>
-                </div>
+                    <div class="status-text">
+                        <p>Fule Level (L) &nbsp;&nbsp;: </p>
+                    </div>
 
+                </div>
             </div>
+            <div class="box">
+                <div class="battery">
+                    <h2 style="color: #eeeeee;">Battery</h2><br>
 
+                    <div class="battery-head"></div>
+                    <div class="battery-body">
+                        <i class="fas fa-bolt"></i>
+                        <div class="charge"></div>
+                    </div>
+                    <p id="battery-percentage">Battery: 0%</p>
+                    <input type="range" min="0" max="100" value="0" id="battery-slider">
 
+                </div>
+            </div>
         </div>
+
         <div class="container">
             <div class="dashboard-container">
                 <h1>Welcome to the Dashboard Hass</h1>
