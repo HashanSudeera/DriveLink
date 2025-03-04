@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Trip Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+        import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+    </script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body class="bg-gray-100 flex flex-col items-center p-6">
+    <h1 class="text-3xl font-bold mb-4">Vehicle Trip Tracker</h1>
+    <div class="flex gap-4 mb-4">
+        <button id="startTrip" class="bg-green-500 text-white px-4 py-2 rounded">Start Trip</button>
+        <button id="endTrip" class="bg-red-500 text-white px-4 py-2 rounded">End Trip</button>
+    </div>
+    <div id="map" class="w-full h-96 rounded-lg shadow-md mb-4"></div>
+    <div class="bg-white p-4 rounded-lg shadow-md w-full max-w-md text-center">
+        <p><strong>Current Speed:</strong> <span id="speed">0</span> km/h</p>
+        <p><strong>Max Speed:</strong> <span id="maxSpeed">0</span> km/h</p>
+        <p><strong>Min Speed:</strong> <span id="minSpeed">0</span> km/h</p>
+        <p><strong>Distance Traveled:</strong> <span id="distance">0</span> km</p>
+        <p><strong>Elapsed Time:</strong> <span id="elapsedTime">0</span> s</p>
+        <p><strong>Stop Duration:</strong> <span id="stopDuration">0</span> s</p>
+    </div>
+    <script type="module">
+        import { ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+        
+        let tripActive
