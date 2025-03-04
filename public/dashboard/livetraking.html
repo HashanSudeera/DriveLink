@@ -11,6 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
     <script src="../app.js"></script>
     <script src="dashboard.js" defer></script>
     <script type="module">
@@ -32,7 +33,7 @@
     </script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-</head>
+
 </head>
 
 <body id="dashboardPage">
@@ -185,64 +186,55 @@
                 let route;
                 let marker, startTime, totalDistance = 0, maxSpeed = 0, minSpeed = Infinity;
         
-                // Initialize map
-                const map = L.map('map').setView([0, 0], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-                route = L.polyline([], { color: 'blue' }).addTo(map);
-        
-                // Listen for GPS updates
-                let prevLatLng = null;
-                onValue(ref(db, 'gps-data'), snapshot => {
-                    const data = snapshot.val();
-                    if (data && tripActive) {
-                        const { latitude, longitude, speed } = data;
-                        const currentLatLng = [latitude, longitude];
+                // Initialize Leaflet map
+                    const map = L.map('map').setView([0, 0], 13);  // Set to a default view
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+
+                    // Initialize Firebase Realtime Database
+                    const dbRef = ref(db, 'gps-data');  // Adjust path as needed
+
+                    // To store the trip status
+                    let tripStarted = false;
+                    let tripPath = [];
+
+                    function updateMap(lat, lon) {
+                        if (!tripStarted) return;
                         
-                        map.setView(currentLatLng, 13);
-                        route.addLatLng(currentLatLng);
-                        if (marker) map.removeLayer(marker);
-                        marker = L.marker(currentLatLng).addTo(map);
+                        const newLocation = [lat, lon];
                         
-                        document.getElementById('speed').textContent = speed;
-                        maxSpeed = Math.max(maxSpeed, speed);
-                        minSpeed = Math.min(minSpeed, speed);
-                        document.getElementById('maxSpeed').textContent = maxSpeed;
-                        document.getElementById('minSpeed').textContent = minSpeed;
-        
-                        if (prevLatLng) {
-                            const distance = getDistance(prevLatLng, currentLatLng);
-                            totalDistance += distance;
-                            document.getElementById('distance').textContent = totalDistance.toFixed(2);
-                        }
-                        prevLatLng = currentLatLng;
+                        // Update the map view
+                        map.setView(newLocation, 13);
+                        
+                        // Add marker and polyline for path
+                        L.marker(newLocation).addTo(map);
+                        tripPath.push(newLocation);
+                        
+                        // Draw the polyline
+                        L.polyline(tripPath, { color: 'blue' }).addTo(map);
                     }
-                });
-        
-                function getDistance([lat1, lon1], [lat2, lon2]) {
-                    const R = 6371;
-                    const dLat = (lat2 - lat1) * Math.PI / 180;
-                    const dLon = (lon2 - lon1) * Math.PI / 180;
-                    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                    return R * c;
-                }
-        
-                document.getElementById('startTrip').addEventListener('click', () => {
-                    tripActive = true;
-                    startTime = Date.now();
-                    totalDistance = 0;
-                    maxSpeed = 0;
-                    minSpeed = Infinity;
-                    route.setLatLngs([]);
-                    document.getElementById('elapsedTime').textContent = '0';
-                    document.getElementById('stopDuration').textContent = '0';
-                });
-        
-                document.getElementById('endTrip').addEventListener('click', () => {
-                    tripActive = false;
-                    const totalTime = ((Date.now() - startTime) / 1000).toFixed(2);
-                    document.getElementById('elapsedTime').textContent = totalTime;
-                });
+
+                    // Fetch GPS data from Firebase
+                    onValue(dbRef, (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            updateMap(80.335346,37.7749);
+                        }
+                    });
+
+                    // Event listeners for Start and End Trip buttons
+                    document.getElementById('startTrip').addEventListener('click', () => {
+                        tripStarted = true;
+                        tripPath = [];  // Reset the path for the new trip
+                        alert('Trip started');
+                    });
+
+                    document.getElementById('endTrip').addEventListener('click', () => {
+                        tripStarted = false;
+                        alert('Trip ended');
+                    });
+
             </script>
         </div>
     </main>
