@@ -69,3 +69,20 @@ batterySlider.addEventListener("input", (event) => {
 });
 
 updateBattery(0);
+
+// Set your fixed latitude and longitude (Replace with your actual coordinates)
+let latitude = 6.1213940;  // Example: San Francisco
+let longitude = 80.3353461;  // Example: San Francisco
+
+// Initialize the map at your fixed location
+let map = L.map('map').setView([latitude, longitude], 20);
+
+// Load OpenStreetMap tiles
+L.tileLayer('https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=SaEENvPjbsqJNNpQTrXe', {
+    attribution: '&copy; MapTiler & OpenStreetMap contributors'
+}).addTo(map);
+
+// Add a marker at the fixed location
+L.marker([latitude, longitude]).addTo(map)
+    .bindPopup(`Vehical: ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`)
+    .openPopup();

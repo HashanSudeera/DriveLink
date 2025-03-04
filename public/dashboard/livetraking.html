@@ -5,13 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="dashboardstyle.css">
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="../app.js"></script>
-    <script src="dashboard.js" defer></script>
+    <script src="dashboard.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="dashboardstyle.css">
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 
 <body id="dashboardPage">
@@ -139,9 +143,9 @@
             <p>Live Tracking</p>
         </div>
         <div class="container">
-            <h1>Space for Intraduse live tracking</h1>
-            <p>add map </p>
-        </div>
+            <h1>Live Location Tracker</h1>
+            <div id="map"></div>
+       </div>
     </main>
 
 
