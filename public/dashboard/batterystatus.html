@@ -138,17 +138,16 @@
             <h1>Drive<span class="highlight">Link</span></h1>
             <p>Battery Status</p>
         </div>
-        <div class="battery-container">
-            <h2>Battery</h2>
-            <div class="battery">
-                <div class="battery-head"></div>
-                <div class="battery-body">
-                    <h2>50%</h2>
-                    <i class="fas fa-bolt"></i>
-                    <div class="charge"></div>
-                </div>
+        <h2>Battery</h2>
+        <div class="battery">
+
+            <div class="battery-head"></div>
+            <div class="battery-body">
+                <i class="fas fa-bolt"></i>
+                <div class="charge"></div>
             </div>
-        </div>
+            <p id="battery-percentage">Battery: 0%</p>
+            <input type="range" min="0" max="100" value="0" id="battery-slider">
     </main>
     <script>
         const charge = document.querySelector(".charge");
