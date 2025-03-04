@@ -144,8 +144,36 @@
                 <button type="button" id="logout-button" class="logout_but">Logout</button>
             </div>
         </div>
-        <div calss="container">
-            <h1>dsdfshj</h1>
+        
+        <div class="container">
+            <div class="container1">
+                <h2>Fuel Monitor</h2><br>
+
+                <div class="fuel-container">
+                    <div class="water" id="waterLevel">
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                    </div>
+                    <span class="fuel-text" id="fuelText">0%</span>
+                </div>
+
+                <div class="status-text">
+                    <p>Fule Level (L) &nbsp;&nbsp;: </p>
+                </div>
+
+            </div>
+            <script>
+                function updateFuelLevel(level) {
+                    const water = document.getElementById("waterLevel");
+                    const text = document.getElementById("fuelText");
+                    water.style.height = level + "%";
+                    text.innerText = level + "%";
+                }
+                
+                // Example: Simulating data update
+                setTimeout(() => updateFuelLevel(75), 1000); // Smoothly fill to 100% in 5 seconds
+            </script>
+            
         </div>
     </main>
    

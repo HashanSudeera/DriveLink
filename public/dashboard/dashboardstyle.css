@@ -29,6 +29,7 @@ body {
 }
 
 #sidebar {
+   
     box-sizing: border-box;
     height: 100vh;
     width: 250px;
@@ -74,6 +75,7 @@ body {
 #sidebar a,
 #sidebar .dropdown-btn,
 #sidebar .logo {
+   
     border-radius: .5em;
     padding: .85em;
     text-decoration: none;
@@ -161,10 +163,12 @@ main p {
 }
 
 .container {
+    
     border: 1px solid var(--line-clr);
     border-radius: 1em;
     margin-bottom: 20px;
     padding: min(3em, 15%);
+     
 
     h2,
     p {
@@ -184,6 +188,7 @@ main p {
     .container {
         border: none;
         padding: 0;
+        
     }
 
     #sidebar {
@@ -268,4 +273,98 @@ main p {
 
 .logout_but:hover {
     background-color: #06e690;
+}
+
+/*fule*/
+
+.container1 {
+    display: flex;
+    
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    display: flex;
+    flex-direction:column;
+
+    padding: -10%;
+    
+    
+  
+    
+    
+}
+.status-text p{
+    text-align: left;
+    color : rgb(255, 255, 255);
+   
+}
+.fuel-container {
+    
+    justify-content: center;
+   position: absolutes;
+    width: 300px;
+    height: 300px;
+    border-radius: 100%;
+    border: 5px solid #ffffff;
+    overflow: hidden;
+    background: radial-gradient(circle, transparent 65%, #ffffff 20%);
+}
+.water {
+    position: relative;
+    bottom: -50%;
+    width: 100%;
+    height: var(--fuel-level, 100%);
+    background: #C4FB6D;
+    animation: wave-animation 2s infinite ease-in-out;
+}
+.wave {
+    position: relative;
+
+    width: 200%;
+    height: 200px;
+    background: #1f509e;
+    opacity: 0.4;
+    bottom: -60%;
+    left: -50%;
+    border-radius: 20%;
+    animation: wave-motion 5s infinite linear;
+    clip-path: ellipse(50% 25% at 50% 50%);
+}
+.wave:nth-child(2) {
+    
+    opacity: 0.3;
+    bottom: -50px;
+    animation-duration: 5s;
+    background: #265499;
+    
+    
+}
+
+.fuel-text {
+   position: relative;
+    width: 200%;
+    text-align: center;
+    top: 80%;
+    transform: translateY(-0%);
+    font-size: 40px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color : #EEEEEE
+}
+
+@keyframes wave-animation {
+    0%, 100% {
+        transform: translateY(10px);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+@keyframes wave-motion {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(10%);
+    }
 }
