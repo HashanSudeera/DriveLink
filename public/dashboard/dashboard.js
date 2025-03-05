@@ -30,16 +30,6 @@ function closeAllSubMenus() {
     })
 }
 
-//fuel sensor data 
-
-function updateFuelLevel(level) {
-    const water = document.getElementById("waterLevel");
-    const text = document.getElementById("fuelText");
-    water.style.height = level + "%";
-    text.innerText = level + "%";
-}
-// Example: Simulating data update
-setTimeout(() => updateFuelLevel(75), 1000); // Smoothly fill to 100% in 5 seconds
 
 
 //battery sensor data

@@ -56,6 +56,8 @@ if (!firebase.apps.length) {
 var db = firebase.firestore();
 var database = firebase.database();
 
+
+
 // 🛠 Function to Register User
 function register(event) {
     event.preventDefault();
@@ -67,7 +69,6 @@ function register(event) {
     const confirmPassword = document.getElementById('confirm-password').value;
     const deviceId = document.getElementById('device-id').value.trim();
     const vehicleType = document.getElementById('vehicle-type').value.trim();
-    const vehicleModel = document.getElementById('vehicle-model').value.trim();
     const mileage = document.getElementById('mileage').value.trim();
 
     // Basic validation
@@ -93,7 +94,6 @@ function register(event) {
                 email,
                 deviceId,
                 vehicleType,
-                vehicleModel,
                 mileage,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
@@ -139,35 +139,62 @@ function loginUser(event) {
             alert("Login failed: " + error.message);
         });
 }
+let min_value = null;
+let max_value = null;
 
-document.addEventListener("DOMContentLoaded", function () {
+
+document.addEventListener("DOMContentLoaded", async function () {
     if (document.body.id === "dashboardPage") {
-        firebase.auth().onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
-                const userId = user.uid;
-                const userRef = firebase.firestore().collection('users').doc(userId);
+                try {
+                    const userId = user.uid;
+                    const db = firebase.firestore();
 
-                userRef.get().then((doc) => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        const deviceId = userData.deviceId;
-                        const username = userData.username;
-                        document.getElementById("device-id").innerText = deviceId;
-                        document.getElementById("usernametag").innerText = `Hi, ${username} !`;
-                        loadSensorData(deviceId);
-                    } else {
+                    // Fetch user data from Firestore
+                    const userRef = db.collection("users").doc(userId);
+                    const userSnap = await userRef.get();
+
+                    if (!userSnap.exists) {
                         console.error("User data not found in Firestore.");
+                        return;
                     }
-                }).catch((error) => {
-                    console.error("Error fetching user data:", error);
-                });
+
+                    const userData = userSnap.data();
+                    const deviceId = userData.deviceId;
+                    const username = userData.username;
+                    const vehicleType = userData.vehicleType; // Get vehicleType
+
+                    // Update UI
+                    document.getElementById("device-id").innerText = deviceId;
+                    document.getElementById("usernametag").innerText = `Hi, ${username} !`;
+
+                    // Fetch vehicle data using vehicleType
+                    const vehicleRef = db.collection("vehicle").doc(vehicleType);
+                    const vehicleSnap = await vehicleRef.get();
+
+                    if (vehicleSnap.exists) {
+                        const vehicleData = vehicleSnap.data();
+                        min_value = vehicleData.minLevel;
+                        max_value = vehicleData.maxLevel;
+                        console.log("Vehicle Data:", vehicleData);
+
+                        document.getElementById("min-id").innerText = min_value;
+                        document.getElementById("max-id").innerText = max_value;
+                    } else {
+                        console.log("No vehicle data found.");
+                    }
+
+                    // Call additional functions
+                    loadSensorData(deviceId);
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                }
             } else {
+                // Redirect if user is not logged in
                 window.location.href = "../login.html";
             }
         });
-    }
-    else {
-        console.log("not dashboard page")
     }
 });
 
@@ -178,6 +205,12 @@ function loadSensorData(deviceId) {
             const data = snapshot.val();
             document.getElementById("ultrasonic-value").innerText = `Distance: ${data.ultrasonic.value} cm`;
             document.getElementById("led-status").innerText = `LED Status: ${data.led_status.value}`;
+
+            // Declare current_level correctly
+            let current_level = data.fuel_sensor.value;
+
+            // Use the correct variable names min_value & max_value
+            setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 1000);
         } else {
             document.getElementById("ultrasonic-value").innerText = "No data available";
             document.getElementById("led-status").innerText = "LED Status: --";
@@ -208,7 +241,6 @@ function signInWithGoogle() {
                         const username = prompt("Enter a username:");
                         const deviceId = prompt("Enter your device ID:");
                         const vehicleType = prompt("Enter your vehicle type (motorcycle, van, car, lorry):");
-                        const vehicleModel = prompt("Enter your vehicle model:");
                         const mileage = prompt("Enter your vehicle mileage:");
 
                         return db.collection('users').doc(user.uid).set({
@@ -216,7 +248,6 @@ function signInWithGoogle() {
                             email: user.email,
                             deviceId,
                             vehicleType,
-                            vehicleModel,
                             mileage,
                             timestamp: firebase.firestore.FieldValue.serverTimestamp()
                         });
@@ -251,7 +282,6 @@ function googleSignIn() {
                         email: user.email,
                         deviceId: "N/A",
                         vehicleType: "N/A",
-                        vehicleModel: "N/A",
                         mileage: "N/A",
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     };
@@ -314,7 +344,6 @@ function completeGoogleRegistration(event) {
     const username = document.getElementById('username').value.trim();
     const deviceId = document.getElementById('device-id').value.trim();
     const vehicleType = document.getElementById('vehicle-type').value.trim();
-    const vehicleModel = document.getElementById('vehicle-model').value.trim();
     const mileage = document.getElementById('mileage').value.trim();
 
     if (!username || !deviceId) {
@@ -327,7 +356,6 @@ function completeGoogleRegistration(event) {
         email: user.email,
         deviceId,
         vehicleType,
-        vehicleModel,
         mileage,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     };
@@ -382,4 +410,38 @@ function googlein() {
             alert("Google Login Failed: " + error.message);
         });
 }
+
+
+
+
+
+
+// fuel moniter sections
+
+function updateFuelLevel(min_level, max_level, current_level) {
+    // Prevent division by zero
+    if (max_level === min_level) {
+        console.error("Max level and min level are the same. Cannot calculate fuel level.");
+        return;
+    }
+
+    // Calculate fuel level percentage
+    let fuel_level = ((current_level - min_level) / (max_level - min_level)) * 100;
+
+    // Ensure the fuel level stays between 0% and 100%
+    fuel_level = Math.max(0, Math.min(100, fuel_level));
+
+    // Update UI elements
+    const water = document.getElementById("waterLevel");
+    const text = document.getElementById("fuelText");
+
+    if (water && text) {
+        water.style.height = fuel_level + "%";
+        text.innerText = fuel_level.toFixed(1) + "%"; // Show 1 decimal place
+    } else {
+        console.error("UI elements not found: waterLevel or fuelText");
+    }
+}
+
+
 
