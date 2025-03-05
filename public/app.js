@@ -210,7 +210,7 @@ function loadSensorData(deviceId) {
             let current_level = data.fuel_sensor.value;
 
             // Use the correct variable names min_value & max_value
-            setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 1000);
+            setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 100);
         } else {
             document.getElementById("ultrasonic-value").innerText = "No data available";
             document.getElementById("led-status").innerText = "LED Status: --";
