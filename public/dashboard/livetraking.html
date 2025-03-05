@@ -10,12 +10,14 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
     <script src="../app.js"></script>
-    <script src="dashboard.js"></script>
-
+    <script src="dashboard.js"defer></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="dashboardstyle.css">
-        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    
 </head>
 
 <body id="dashboardPage">
@@ -94,6 +96,16 @@
                 </a>
             </li>
             <li>
+                <a href="tripmange.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
+                        fill="#e3e3e3">
+                        <path
+                            d="M160-120v-640q0-33 23.5-56.5T240-840h240q33 0 56.5 23.5T560-760v280h40q33 0 56.5 23.5T680-400v180q0 17 11.5 28.5T720-180q17 0 28.5-11.5T760-220v-288q-9 5-19 6.5t-21 1.5q-42 0-71-29t-29-71q0-32 17.5-57.5T684-694l-84-84 42-42 148 144q15 15 22.5 35t7.5 41v380q0 42-29 71t-71 29q-42 0-71-29t-29-71v-200h-60v300H160zm80-440h240v-200H240v200zm480 0q17 0 28.5-11.5T760-600q0-17-11.5-28.5T720-640q-17 0-28.5 11.5T680-600q0 17 11.5 28.5T720-560zM240-200h240v-280H240v280zm240 0H240h240z" />
+                    </svg>
+                    <span>Trip Manage</span>
+                </a>
+            </li>
+            <li>
                 <a href="tripmanage.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
                         fill="#e3e3e3">
@@ -144,7 +156,52 @@
         </div>
         <div class="container">
             <h1>Live Location Tracker</h1>
+            <h2>Your Device ID : <span id="device-id"></span></h2>
+            <br>
             <div id="map"></div>
+            <script>
+                let latitude = 6.1213940;  // Your predefined latitude
+                let longitude = 80.3353461;  // Your predefined longitude
+
+                // Declare map and marker globally
+                let map;
+                let marker;
+
+                function initMap() {
+                    // Initialize the map
+                    map = L.map('map').setView([latitude, longitude], 50);
+
+                    // Load Google Maps tiles
+                    L.tileLayer('https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=SaEENvPjbsqJNNpQTrXe', {
+                        attribution: '&copy; MapTiler & OpenStreetMap contributors'
+                    }).addTo(map);
+
+                    // Add a marker at the fixed location
+                    marker = L.marker([latitude, longitude], { draggable: false }).addTo(map)
+                        .bindPopup(`Location: ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`)
+                        .openPopup();
+
+                    // Add a button to re-center the map
+                    let recenterButton = L.control({ position: "topright" });
+                    recenterButton.onAdd = function () {
+                        let div = L.DomUtil.create("button", "recenter-btn");
+                        div.innerHTML = "Re-Center Map";
+                        div.onclick = centerMap;
+                        return div;
+                    };
+                    recenterButton.addTo(map);
+                }
+
+                // Function to center the map on the original location
+                function centerMap() {
+                    map.setView([latitude, longitude], 50);
+                    console.log("Map centered on original location");
+                }
+
+                // Wait for the page to load before initializing the map
+                document.addEventListener("DOMContentLoaded", initMap);
+                
+            </script>
        </div>
     </main>
 

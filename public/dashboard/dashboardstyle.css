@@ -418,14 +418,7 @@ p {
     text-align: center;
     flex-direction: column;
     background: transparent;
-
     left: -20px;
-
-
-
-
-
-
 
 }
 
@@ -540,7 +533,7 @@ p {
 }
 
 body {
-    font-family: Arial, sans-serif;
+    
     text-align: center;
     margin: 0;
     padding: 0;
@@ -550,10 +543,35 @@ h1 {
     margin-top: 20px;
 }
 
+/* Full page map view */
 #map {
-    width: 90%;
-    height: 500px;
-    margin: 20px auto;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(211, 205, 205, 0.2);
+    height: 50vh;  /* Full screen height */
+    width: 100%;    /* Full screen width */
+    
 }
+
+/* Center button styling */
+.recenter-btn {
+    background: linear-gradient(145deg, #4CAF50, #388E3C); /* Green gradient */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.1);  /* Nice shadows */
+    transition: all 0.3s ease-in-out;  /* Smooth transition for hover */
+    font-size: 14px;
+    margin: 10px;
+}
+
+.recenter-btn:hover {
+    background: linear-gradient(145deg, #388E3C, #4CAF50); /* Invert the gradient on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);  /* Increase shadow on hover */
+}
+
+.recenter-btn:active {
+    transform: translateY(2px);  /* Button presses down on click */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
