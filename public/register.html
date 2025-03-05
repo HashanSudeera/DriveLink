@@ -1,6 +1,7 @@
 <!-- Complete Project Details at: https://RandomNerdTutorials.com/ -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +13,12 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
-    
+
     <link rel="stylesheet" href="style.css">
     <script src="app.js" defer></script>
 
 </head>
+
 <body>
     <div class="register-container">
         <h1>DriveLink</h1>
@@ -39,44 +41,38 @@
             </div>
             <div class="form-group">
                 <select id="vehicle-type">
-                    <option value="motorcycle">Motorcycle</option>
-                    <option value="van">Van</option>
-                    <option value="car">Car</option>
-                    <option value="lorry">Lorry</option>
+                    <option value="dio">Dio</option>
+                    <option value="ct100">CT100</option>
+                    <option value="fz">FZ</option>
                 </select>
-                
+
             </div>
-            <div class="form-group">
-                <select id="vehicle-model">
-                    <option value="modelA">Model A</option>
-                    <option value="modelB">Model B</option>
-                    <option value="modelC">Model C</option>
-                </select>
-            </div>
+
             <div class="form-group">
                 <input type="number" id="mileage" placeholder="Mileage (km)" required>
             </div>
 
             <button type="button" id="register-button">Register</button>
-            
+
 
 
             <p>Already have an account? <a href="login.html">Login here</a></p>
-            
+
         </form>
-        
-        
-    
-    <div class="login-container1">
-        <button id="google-login-button">
-          <img src="https://www.svgrepo.com/show/303108/google-icon-logo.svg" alt="Google Logo">
-          Sign in with Google
-        </button>
-      </div>
-      <h4>©Team TeraNode</h4>
+
+
+
+        <div class="login-container1">
+            <button id="google-login-button">
+                <img src="https://www.svgrepo.com/show/303108/google-icon-logo.svg" alt="Google Logo">
+                Sign in with Google
+            </button>
+        </div>
+        <h4>©Team TeraNode</h4>
     </div>
 
 
-    
+
 </body>
+
 </html>

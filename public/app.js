@@ -67,7 +67,6 @@ function register(event) {
     const confirmPassword = document.getElementById('confirm-password').value;
     const deviceId = document.getElementById('device-id').value.trim();
     const vehicleType = document.getElementById('vehicle-type').value.trim();
-    const vehicleModel = document.getElementById('vehicle-model').value.trim();
     const mileage = document.getElementById('mileage').value.trim();
 
     // Basic validation
@@ -93,7 +92,6 @@ function register(event) {
                 email,
                 deviceId,
                 vehicleType,
-                vehicleModel,
                 mileage,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
@@ -152,6 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         const userData = doc.data();
                         const deviceId = userData.deviceId;
                         const username = userData.username;
+                        const vehical = userData.vehicleType;
                         document.getElementById("device-id").innerText = deviceId;
                         document.getElementById("usernametag").innerText = `Hi, ${username} !`;
                         loadSensorData(deviceId);
