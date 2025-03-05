@@ -237,12 +237,6 @@ function signInWithGoogle() {
             return db.collection('users').doc(user.uid).get()
                 .then((doc) => {
                     if (!doc.exists) {
-                        // If user does not exist, collect additional details
-                        const username = prompt("Enter a username:");
-                        const deviceId = prompt("Enter your device ID:");
-                        const vehicleType = prompt("Enter your vehicle type (motorcycle, van, car, lorry):");
-                        const mileage = prompt("Enter your vehicle mileage:");
-
                         return db.collection('users').doc(user.uid).set({
                             username,
                             email: user.email,
