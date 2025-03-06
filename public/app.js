@@ -210,6 +210,8 @@ function loadSensorData(deviceId) {
 
             // Declare current_level correctly
             let current_level = data.fuel_sensor.value;
+            let lati = data.tracking.longitude;
+            localStorage.setItem("latitude",lati) ;
 
             // Use the correct variable names min_value & max_value
             setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 100);
