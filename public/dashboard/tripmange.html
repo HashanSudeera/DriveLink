@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="../app.js"></script>
     <script src="dashboard.js" defer></script>
+    
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -140,6 +141,16 @@
 
     <!-- ======================================================================================================================-->
     <main>
+        <script>
+            document.addEventListener("DOMContentLoaded",function(){
+                lodedata ();
+                console.log('sa')
+            })
+            function lodedata(){
+                deviseId = localStorage.getItem("deviceId");
+                console.log(deviseId);
+            }
+        </script>
         <div class="title-container">
             <h1>Drive<span class="highlight">Link</span></h1>
             <p>Trip Manage</p>
@@ -164,22 +175,23 @@
                 <button id="endButton" disabled>End</button>
                 <button id="reportButton" disabled>Generate Report</button>
                 
-                <script type="module">
+                
+                    <script type="module">
 
                     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
                     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
                     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
+                    
                     
                     
                     const app = initializeApp(firebaseConfig);
                     const firestore = getFirestore(app);
                     const db = getDatabase(app);
-                    const userId ="User10";
+                    const userId = 'User10';
                     
                     let map = L.map('map').setView([0, 0], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
+                    
                     let marker = L.marker([0, 0]).addTo(map);
                     let polyline = L.polyline([], { color: 'Black' }).addTo(map);
                     let path = [];
