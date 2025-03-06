@@ -283,7 +283,7 @@
 
                             const tripRef = collection(firestore, `tripReports/${userId}/trips`);
                             const formattedPath = path.map(coords => ({ lat: coords[0], lon: coords[1] }));
-
+                              
                             const tripData = {
                                 distance: totalDistance.toFixed(2) + " km",
                                 duration: totalDuration.toFixed(2) + " sec",
