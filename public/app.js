@@ -208,15 +208,28 @@ function loadSensorData(deviceId) {
 
             // Declare current_level correctly
             let current_level = data.fuel_sensor.value;
+            let battery_level = data.battery.value;
 
+            console.log(battery_level);
+
+            //fuelandbattery()
             // Use the correct variable names min_value & max_value
-            setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 100);
+            //setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 500);
+            setTimeout(() => updateBattery(battery_level), 500);
+
+            // Run both functions in parallel
+
+
+
+
+
         } else {
             document.getElementById("ultrasonic-value").innerText = "No data available";
             document.getElementById("led-status").innerText = "LED Status: --";
         }
     });
 }
+
 
 function logout() {
     firebase.auth().signOut().then(() => {
@@ -441,6 +454,75 @@ function updateFuelLevel(min_level, max_level, current_level) {
     } else {
         console.error("UI elements not found: waterLevel or fuelText");
     }
+}
+
+
+
+//battery sensor data
+
+/* const charge = document.querySelector(".charge");
+const batteryPercentage = document.getElementById("battery-percentage");
+
+function updateBattery(level) {
+    console.log("update")
+
+    cal_level = (level / 12) * 100;
+    console.log(cal_level);
+    charge.style.height = cal_level + "%";
+
+    if (cal_level <= 25) {
+        charge.style.background = "var(--red)";
+    } else if (cal_level <= 50) {
+        charge.style.background = "var(--orange)";
+    } else if (cal_level <= 75) {
+        charge.style.background = "var(--yellow)";
+    } else if (cal_level <= 100) {
+        charge.style.background = "var(--green)";
+    }
+
+    batteryPercentage.innerText = `Battery: ${cal_level}%`;
+} */
+
+
+
+
+function updateBattery(level) {
+    const charge = document.querySelector(".charge");
+    const batteryPercentage = document.getElementById("battery-percentage");
+    console.log("Updating battery level...");
+
+    // Ensure elements exist
+    if (!charge || !batteryPercentage) {
+        console.error("Error: Battery elements not found in the DOM!");
+        return;
+    }
+
+    // Ensure level is valid
+    if (level === undefined || level === null) {
+        console.error("Error: Battery level is undefined or null.");
+        return;
+    }
+
+    // Calculate battery level
+    let cal_level = (level / 12) * 100;
+    cal_level = Math.max(0, Math.min(cal_level, 100)); // Ensure value is between 0-100
+
+    console.log("Calculated Battery Level:", cal_level);
+
+    // Update battery UI
+    charge.style.height = cal_level + "%";
+
+    if (cal_level <= 25) {
+        charge.style.background = "var(--red)";
+    } else if (cal_level <= 50) {
+        charge.style.background = "var(--orange)";
+    } else if (cal_level <= 75) {
+        charge.style.background = "var(--yellow)";
+    } else {
+        charge.style.background = "var(--green)";
+    }
+
+    batteryPercentage.innerText = `Battery: ${Math.round(cal_level)}%`;
 }
 
 
