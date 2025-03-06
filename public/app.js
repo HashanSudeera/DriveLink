@@ -210,14 +210,12 @@ function loadSensorData(deviceId) {
             let current_level = data.fuel_sensor.value;
             let battery_level = data.battery.value;
 
-            console.log(battery_level);
+
 
             //fuelandbattery()
             // Use the correct variable names min_value & max_value
-            //setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 500);
+            setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 500);
             setTimeout(() => updateBattery(battery_level), 500);
-
-            // Run both functions in parallel
 
 
 
