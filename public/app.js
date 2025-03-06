@@ -177,7 +177,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                         const vehicleData = vehicleSnap.data();
                         min_value = vehicleData.minLevel;
                         max_value = vehicleData.maxLevel;
-                        console.log("Vehicle Data:", vehicleData);
+
+                        localStorage.setItem("min_value", min_value);
+                        localStorage.setItem("max_value", max_value);
 
                         document.getElementById("min-id").innerText = min_value;
                         document.getElementById("max-id").innerText = max_value;
@@ -210,6 +212,8 @@ function loadSensorData(deviceId) {
             let current_level = data.fuel_sensor.value;
             let battery_level = data.battery.value;
 
+            localStorage.setItem("fuel_level", current_level);
+            localStorage.setItem("battery_level", battery_level);
 
 
             //fuelandbattery()

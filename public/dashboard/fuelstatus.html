@@ -12,6 +12,45 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="../app.js"></script>
     <script src="dashboard.js" defer></script>
+    <!-- <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadFueldata();
+
+        })
+        function loadFueldata() {
+            let current_level = parseFloat(localStorage.getItem("fuel_level")) || 0;
+            let min_level = parseFloat(localStorage.getItem("min_value")) || 0;
+            let max_level = parseFloat(localStorage.getItem("max_value")) || 100;
+
+            // Call the function to update the UI
+            updateFuelLevel(min_level, max_level, current_level);
+
+        }
+        function updateFuelLevel(min_level, max_level, current_level) {
+            // Prevent division by zero
+            if (max_level === min_level) {
+                console.error("Max level and min level are the same. Cannot calculate fuel level.");
+                return;
+            }
+
+            // Calculate fuel level percentage
+            let fuel_level = ((current_level - min_level) / (max_level - min_level)) * 100;
+
+            // Ensure the fuel level stays between 0% and 100%
+            fuel_level = Math.max(0, Math.min(100, fuel_level));
+
+            // Update UI elements
+            const water = document.getElementById("waterLevel");
+            const text = document.getElementById("fuelText");
+
+            if (water && text) {
+                water.style.height = fuel_level + "%";
+                text.innerText = fuel_level.toFixed(1) + "%"; // Show 1 decimal place
+            } else {
+                console.error("UI elements not found: waterLevel or fuelText");
+            }
+        }
+    </script> -->
 
 </head>
 
