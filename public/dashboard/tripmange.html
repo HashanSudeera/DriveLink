@@ -175,14 +175,12 @@
                 <button id="endButton" disabled>End</button>
                 <button id="reportButton" disabled>Generate Report</button>
                 
-                
+                hh
                     <script type="module">
 
                     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
                     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
                     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-                    
-                    
                     
                     const app = initializeApp(firebaseConfig);
                     const firestore = getFirestore(app);
@@ -193,11 +191,11 @@
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
                     
                     let marker = L.marker([0, 0]).addTo(map);
-                    let polyline = L.polyline([], { color: 'Black' }).addTo(map);
-                    let path = [];
-
                     let trackingActive = false;
                     let startTime = null, endTime = null, totalDistance = 0, totalDuration = 0, movingDuration = 0, topSpeed = 0;
+                    let path = [];
+                    let polyline = L.polyline([], { color: 'red' }).addTo(map);
+
                     
                     const userRef = ref(db, `${userId}/tracking`);
                     onValue(userRef, (snapshot) => {
