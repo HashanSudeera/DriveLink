@@ -164,7 +164,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                     const deviceId = userData.deviceId;
                     const username = userData.username;
                     const vehicleType = userData.vehicleType; // Get vehicleType
+                    localStorage.setItem("deviceId",deviceId);
 
+                   
                     // Update UI
                     document.getElementById("device-id").innerText = deviceId;
                     document.getElementById("usernametag").innerText = `Hi, ${username} !`;

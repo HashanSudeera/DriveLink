@@ -60,5 +60,8 @@ batterySlider.addEventListener("input", (event) => {
 
 updateBattery(0);
 
+/*trip manger funtions*/
+// Import Firebase
+
 
 
