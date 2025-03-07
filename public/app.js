@@ -9,14 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (registerButton) {
         registerButton.addEventListener('click', register);
-    } else {
-        console.error("Register button not found! Check if the ID is correct.");
     }
-
     if (loginButton) {
         loginButton.addEventListener('click', loginUser);
-    } else {
-        console.error("Login button not found! Check if the ID is correct.");
     }
     if (googleLoginButton) {
         googleLoginButton.addEventListener('click', googleLogin);
@@ -29,9 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (logoutbutton) {
         logoutbutton.addEventListener('click', logout);
-    }
-    else {
-        console.error("Logout button not found! Check if the ID is correct.");
     }
 
 });
@@ -165,9 +157,12 @@ document.addEventListener("DOMContentLoaded", async function () {
                     const username = userData.username;
                     const vehicleType = userData.vehicleType; // Get vehicleType
 
+                    localStorage.setItem("deviceId", deviceId);
+                    localStorage.setItem("username", username);
+
                     // Update UI
                     document.getElementById("device-id").innerText = deviceId;
-                    document.getElementById("usernametag").innerText = `Hi, ${username} !`;
+                    //document.getElementById("usernametag").innerText = `Hi, ${username} !`;
 
                     // Fetch vehicle data using vehicleType
                     const vehicleRef = db.collection("vehicle").doc(vehicleType);
@@ -215,6 +210,9 @@ function loadSensorData(deviceId) {
             localStorage.setItem("fuel_level", current_level);
             localStorage.setItem("battery_level", battery_level);
 
+            console.log(localStorage);
+
+
 
             //fuelandbattery()
             // Use the correct variable names min_value & max_value
@@ -235,6 +233,7 @@ function loadSensorData(deviceId) {
 
 function logout() {
     firebase.auth().signOut().then(() => {
+        localStorage.clear();
         window.location.href = "../login.html";
 
     }).catch((error) => {

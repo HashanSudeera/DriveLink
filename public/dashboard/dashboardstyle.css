@@ -1,13 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-:root {
-    --base-clr: #11121a;
-    --line-clr: #42434a;
-    --hover-clr: #222533;
-    --text-clr: #EEEEEE;
-    --accent-clr: #C4FB6D;
-    --secondary-text-clr: #b0b3c1;
-}
+
 
 * {
     margin: 0;
@@ -533,7 +526,7 @@ p {
 }
 
 body {
-    
+
     text-align: center;
     margin: 0;
     padding: 0;
@@ -545,33 +538,40 @@ h1 {
 
 /* Full page map view */
 #map {
-    height: 50vh;  /* Full screen height */
-    width: 100%;    /* Full screen width */
-    
+    height: 50vh;
+    /* Full screen height */
+    width: 100%;
+    /* Full screen width */
+
 }
 
 /* Center button styling */
 .recenter-btn {
-    background: linear-gradient(145deg, #4CAF50, #388E3C); /* Green gradient */
+    background: linear-gradient(145deg, #4CAF50, #388E3C);
+    /* Green gradient */
     color: white;
     border: none;
     padding: 12px 20px;
     cursor: pointer;
     border-radius: 8px;
     font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.1);  /* Nice shadows */
-    transition: all 0.3s ease-in-out;  /* Smooth transition for hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* Nice shadows */
+    transition: all 0.3s ease-in-out;
+    /* Smooth transition for hover */
     font-size: 14px;
     margin: 10px;
 }
 
 .recenter-btn:hover {
-    background: linear-gradient(145deg, #388E3C, #4CAF50); /* Invert the gradient on hover */
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);  /* Increase shadow on hover */
+    background: linear-gradient(145deg, #388E3C, #4CAF50);
+    /* Invert the gradient on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+    /* Increase shadow on hover */
 }
 
 .recenter-btn:active {
-    transform: translateY(2px);  /* Button presses down on click */
+    transform: translateY(2px);
+    /* Button presses down on click */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-

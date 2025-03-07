@@ -185,6 +185,14 @@
                 <p id="ultrasonic-value">Distance: -- cm</p>
                 <p id="led-status">LED Status: --</p>
                 <button type="button" id="logout-button" class="logout_but">Logout</button>
+                <button onclick="clearStorage()">Clear LocalStorage</button>
+
+                <script>
+                    function clearStorage() {
+                        localStorage.clear();
+                        alert("LocalStorage cleared!");
+                    }
+                </script>
             </div>
         </div>
     </main>
