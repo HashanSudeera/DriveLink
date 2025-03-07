@@ -101,15 +101,15 @@
 <body id="fuelPage">
     <nav id="sidebar">
         <ul>
-            <li>
-                <p class="logo" id="usernametag">Hi, -- !</p>
-                <button onclick=toggleSidebar() id="toggle-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                        fill="#e8eaed">
-                        <path
-                            d="m313-480 155 156q11 11 11.5 27.5T468-268q-11 11-28 11t-28-11L228-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 27.5-11.5T468-692q11 11 11 28t-11 28L313-480Zm264 0 155 156q11 11 11.5 27.5T732-268q-11 11-28 11t-28-11L492-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 27.5-11.5T732-692q11 11 11 28t-11 28L577-480Z" />
-                    </svg>
-                </button>
+
+            <p class="logo" id="usernametag">Hi, -- !</p>
+            <button onclick=toggleSidebar() id="toggle-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    fill="#e8eaed">
+                    <path
+                        d="m313-480 155 156q11 11 11.5 27.5T468-268q-11 11-28 11t-28-11L228-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 27.5-11.5T468-692q11 11 11 28t-11 28L313-480Zm264 0 155 156q11 11 11.5 27.5T732-268q-11 11-28 11t-28-11L492-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 27.5-11.5T732-692q11 11 11 28t-11 28L577-480Z" />
+                </svg>
+            </button>
             </li>
             <li>
                 <a href="dashboard.html">
@@ -248,6 +248,7 @@
                         <p>Fuel Efficiency (km/L) : </p>
                         <p>Fuel Cost Estimation : </p>
                         <p><span id="text1">0</span></p>
+                        <p><span id="username1">0</span></p>
                     </div>
 
 
@@ -262,6 +263,7 @@
             import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
             let deviceId = localStorage.getItem("deviceId"); // ✅ Change 'const' to 'let'
+
 
             console.log(deviceId);
             let min_value = parseFloat(localStorage.getItem("min_value"));
@@ -284,6 +286,7 @@
 
                     // ✅ Only update UI if elements exist
                     if (document.getElementById("text1")) document.getElementById("text1").innerText = data.value;
+
 
                     setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 500);
 

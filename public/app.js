@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                     // Update UI
                     document.getElementById("device-id").innerText = deviceId;
-                    //document.getElementById("usernametag").innerText = `Hi, ${username} !`;
+                    document.getElementById("usernametag").innerText = username;
 
                     // Fetch vehicle data using vehicleType
                     const vehicleRef = db.collection("vehicle").doc(vehicleType);
