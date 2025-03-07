@@ -69,7 +69,7 @@
                     <span>Fuel Status</span>
                 </a>
             </li>
-            
+
             <li class="active">
                 <a href="batterystatus.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
@@ -90,7 +90,7 @@
                     <span>Live Tracking</span>
                 </a>
             </li>
-           
+
             <li>
                 <a href="tripmange.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
@@ -151,7 +151,6 @@
                         <div class="charge"></div>
                     </div>
                     <p id="battery-percentage">Battery: 0%</p>
-                    <input type="range" min="0" max="100" value="0" id="battery-slider">
 
                 </div>
             </div>
@@ -171,6 +170,79 @@
             </div>
 
         </div>
+        <!-- <script type="module">
+
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+            import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+            import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+            let deviceId = localStorage.getItem("deviceId"); // ✅ Change 'const' to 'let'
+
+            console.log(deviceId);
+
+
+
+            const app = initializeApp(firebaseConfig);
+            const firestore = getFirestore(app);
+            const db = getDatabase(app);
+            const userId = deviceId;
+
+            const userRef = ref(db, `${userId}/battery`);
+            onValue(userRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    let battery_level = data.value;
+
+                    console.log(battery_level);
+
+
+                    // ✅ Only update UI if elements exist
+                    if (document.getElementById("text1")) document.getElementById("text1").innerText = data.value;
+
+                    setTimeout(() => updateBattery(min_value, max_value, current_level), 500);
+
+
+                }
+                function updateBattery(level) {
+                    const charge = document.querySelector(".charge");
+                    const batteryPercentage = document.getElementById("battery-percentage");
+                    console.log("Updating battery level...");
+
+                    // Ensure elements exist
+                    if (!charge || !batteryPercentage) {
+                        console.error("Error: Battery elements not found in the DOM!");
+                        return;
+                    }
+
+                    // Ensure level is valid
+                    if (level === undefined || level === null) {
+                        console.error("Error: Battery level is undefined or null.");
+                        return;
+                    }
+
+                    // Calculate battery level
+                    let cal_level = (level / 12) * 100;
+                    cal_level = Math.max(0, Math.min(cal_level, 100)); // Ensure value is between 0-100
+
+                    console.log("Calculated Battery Level:", cal_level);
+
+                    // Update battery UI
+                    charge.style.height = cal_level + "%";
+
+                    if (cal_level <= 25) {
+                        charge.style.background = "var(--red)";
+                    } else if (cal_level <= 50) {
+                        charge.style.background = "var(--orange)";
+                    } else if (cal_level <= 75) {
+                        charge.style.background = "var(--yellow)";
+                    } else {
+                        charge.style.background = "var(--green)";
+                    }
+
+                    batteryPercentage.innerText = `Battery: ${Math.round(cal_level)}%`;
+                }
+            });
+        </script> -->
     </main>
 
 
