@@ -27,7 +27,7 @@
                     </svg>
                 </button>
             </li>
-            <li class="active">
+            <li>
                 <a href="dashboard.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                         fill="#e8eaed">
@@ -37,28 +37,7 @@
                     <span>Dashboard</span>
                 </a>
             </li>
-            <!--<li>
-                <button onclick=toggleSubMenu(this) class="dropdown-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                        fill="#e8eaed">
-                        <path
-                            d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h207q16 0 30.5 6t25.5 17l57 57h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Zm400-160v40q0 17 11.5 28.5T600-320q17 0 28.5-11.5T640-360v-40h40q17 0 28.5-11.5T720-440q0-17-11.5-28.5T680-480h-40v-40q0-17-11.5-28.5T600-560q-17 0-28.5 11.5T560-520v40h-40q-17 0-28.5 11.5T480-440q0 17 11.5 28.5T520-400h40Z" />
-                    </svg>
-                    <span>Create</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                        fill="#e8eaed">
-                        <path
-                            d="M480-361q-8 0-15-2.5t-13-8.5L268-556q-11-11-11-28t11-28q11-11 28-11t28 11l156 156 156-156q11-11 28-11t28 11q11 11 11 28t-11 28L508-372q-6 6-13 8.5t-15 2.5Z" />
-                    </svg>
-                </button>
-                <ul class="sub-menu">
-                    <div>
-                        <li><a href="#">Folder</a></li>
-                        <li><a href="#">Document</a></li>
-                        <li><a href="#">Project</a></li>
-                    </div>
-                </ul>
-            </li>-->
+            
             <li>
                 <a href="fuelstatus.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
@@ -89,8 +68,7 @@
                     <span>Live Tracking</span>
                 </a>
             </li>
-
-
+            
             <li>
                 <a href="tripmange.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
@@ -111,7 +89,7 @@
                     <span>Vehical Helth</span>
                 </a>
             </li>
-            <li>
+            <li class="active">
                 <button onclick=toggleSubMenu(this) class="dropdown-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
                         fill="#e3e3e3">
@@ -128,6 +106,7 @@
                     </div>
                 </ul>
             </li>
+            
             <li>
                 <a href="profile.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
@@ -145,53 +124,10 @@
     <main>
         <div class="title-container">
             <h1>Drive<span class="highlight">Link</span></h1>
-            <p>Dashboard</p>
+            <p>Reports</p>
         </div>
-        <div class="main-container">
-            <div class="box">
-                <div class="container1">
-                    <h2>Fuel Monitor</h2><br>
-
-                    <div class="fuel-container">
-                        <div class="water" id="waterLevel">
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                        </div>
-                        <span class="fuel-text" id="fuelText">0%</span>
-                    </div>
-
-
-                    <p>Fule Level (L) &nbsp;&nbsp;: </p>
-
-
-                </div>
-            </div>
-            <div class="box">
-                <div class="battery">
-                    <h2 style="color: #eeeeee;">Battery</h2><br>
-
-                    <div class="battery-head"></div>
-                    <div class="battery-body">
-                        <i class="fas fa-bolt"></i>
-                        <div class="charge"></div>
-                    </div>
-                    <p id="battery-percentage">Battery: 0%</p>
-                    <input type="range" min="0" max="100" value="0" id="battery-slider">
-
-                </div>
-            </div>
-        </div>
-
         <div class="container">
-            <div class="dashboard-container">
-                <h1>Welcome to the Dashboard Hass</h1>
-                <h2>Your Device ID: <span id="device-id"></span></h2>
-                <h2>min level: <span id="min-id"></span></h2>
-                <h2>max level: <span id="max-id"></span></h2>
-                <p id="ultrasonic-value">Distance: -- cm</p>
-                <p id="led-status">LED Status: --</p>
-                <button type="button" id="logout-button" class="logout_but">Logout</button>
-            </div>
+            <h1>Reports</h1>
         </div>
     </main>
 

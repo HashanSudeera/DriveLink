@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="dashboardstyle.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -27,7 +29,7 @@
                     </svg>
                 </button>
             </li>
-            <li class="active">
+            <li>
                 <a href="dashboard.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                         fill="#e8eaed">
@@ -37,28 +39,7 @@
                     <span>Dashboard</span>
                 </a>
             </li>
-            <!--<li>
-                <button onclick=toggleSubMenu(this) class="dropdown-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                        fill="#e8eaed">
-                        <path
-                            d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h207q16 0 30.5 6t25.5 17l57 57h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Zm400-160v40q0 17 11.5 28.5T600-320q17 0 28.5-11.5T640-360v-40h40q17 0 28.5-11.5T720-440q0-17-11.5-28.5T680-480h-40v-40q0-17-11.5-28.5T600-560q-17 0-28.5 11.5T560-520v40h-40q-17 0-28.5 11.5T480-440q0 17 11.5 28.5T520-400h40Z" />
-                    </svg>
-                    <span>Create</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                        fill="#e8eaed">
-                        <path
-                            d="M480-361q-8 0-15-2.5t-13-8.5L268-556q-11-11-11-28t11-28q11-11 28-11t28 11l156 156 156-156q11-11 28-11t28 11q11 11 11 28t-11 28L508-372q-6 6-13 8.5t-15 2.5Z" />
-                    </svg>
-                </button>
-                <ul class="sub-menu">
-                    <div>
-                        <li><a href="#">Folder</a></li>
-                        <li><a href="#">Document</a></li>
-                        <li><a href="#">Project</a></li>
-                    </div>
-                </ul>
-            </li>-->
+            
             <li>
                 <a href="fuelstatus.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
@@ -89,8 +70,7 @@
                     <span>Live Tracking</span>
                 </a>
             </li>
-
-
+            
             <li>
                 <a href="tripmange.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
@@ -111,7 +91,7 @@
                     <span>Vehical Helth</span>
                 </a>
             </li>
-            <li>
+            <li class="active">
                 <button onclick=toggleSubMenu(this) class="dropdown-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
                         fill="#e3e3e3">
@@ -127,6 +107,16 @@
                         <li><a href="batteryreport.html">Battery Report</a></li>
                     </div>
                 </ul>
+            </li>
+            <li class="active">
+                <a href="reports.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
+                        fill="#e3e3e3">
+                        <path
+                            d="M80-600v-160q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v160h-80v-160H160v160H80zm80 360q-33 0-56.5-23.5T80-320v-200h80v200h640v-200h80v200q0 33-23.5 56.5T800-240H160zM40-120v-80h880v80H40zm440-420zM80-520v-80h240q11 0 21 6t15 16l47 93 123-215q5-9 14-14.5t20-5.5q11 0 21 5.5t15 16.5l49 98h235v80H620q-11 0-21-5.5T584-542l-26-53-123 215q-5 10-15 15t-21 5q-11 0-20.5-6T364-382l-69-138H80z" />
+                    </svg>
+                    <span>Reports</span>
+                </a>
             </li>
             <li>
                 <a href="profile.html">
@@ -145,53 +135,103 @@
     <main>
         <div class="title-container">
             <h1>Drive<span class="highlight">Link</span></h1>
-            <p>Dashboard</p>
+            <p>Trip Reports</p>
         </div>
-        <div class="main-container">
-            <div class="box">
-                <div class="container1">
-                    <h2>Fuel Monitor</h2><br>
-
-                    <div class="fuel-container">
-                        <div class="water" id="waterLevel">
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                        </div>
-                        <span class="fuel-text" id="fuelText">0%</span>
-                    </div>
-
-
-                    <p>Fule Level (L) &nbsp;&nbsp;: </p>
-
-
-                </div>
-            </div>
-            <div class="box">
-                <div class="battery">
-                    <h2 style="color: #eeeeee;">Battery</h2><br>
-
-                    <div class="battery-head"></div>
-                    <div class="battery-body">
-                        <i class="fas fa-bolt"></i>
-                        <div class="charge"></div>
-                    </div>
-                    <p id="battery-percentage">Battery: 0%</p>
-                    <input type="range" min="0" max="100" value="0" id="battery-slider">
-
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="dashboard-container">
-                <h1>Welcome to the Dashboard Hass</h1>
-                <h2>Your Device ID: <span id="device-id"></span></h2>
-                <h2>min level: <span id="min-id"></span></h2>
-                <h2>max level: <span id="max-id"></span></h2>
-                <p id="ultrasonic-value">Distance: -- cm</p>
-                <p id="led-status">LED Status: --</p>
-                <button type="button" id="logout-button" class="logout_but">Logout</button>
-            </div>
+        <div>
+            <script type="module">
+                import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    
+    // Firebase Config
+    var firebaseConfig = {
+        apiKey: "AIzaSyAa9bahojYMk_1meGG8YCgUDFNj6MEHPeI",
+        authDomain: "espclientsnew.firebaseapp.com",
+        databaseURL: "https://espclientsnew-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "espclientsnew",
+        storageBucket: "espclientsnew.firebasestorage.app",
+        messagingSenderId: "196283041268",
+        appId: "1:196283041268:web:6f24e1202238bf01fea5a1"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    async function loadTripData() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tripId = urlParams.get("tripId");
+    
+        console.log("Fetching trip data for:", tripId);
+    
+        const tripRef = doc(db, "tripReports", "User10", "trips", tripId);
+        const snapshot = await getDoc(tripRef);
+    
+        if (snapshot.exists()) {
+            const data = snapshot.data();
+            console.log("Fetched Data:", data);
+    
+            document.getElementById("tripDate").innerText = data.tripDate || "N/A";
+            document.getElementById("startTime").innerText = data.startTime || "N/A";
+            document.getElementById("endTime").innerText = data.endTime || "N/A";
+            document.getElementById("duration").innerText = data.duration || "N/A";
+            document.getElementById("distance").innerText = data.distance || "N/A";
+            document.getElementById("topSpeed").innerText = data.topSpeed || "N/A";
+    
+            if (!document.getElementById("map")) {
+                console.error("Map container not found!");
+                return;
+            }
+    
+            const map = L.map('map').setView([data.route[0].lat, data.route[0].lon], 30);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            
+            const latLngs = data.route.map(point => [point.lat, point.lon]);
+            L.polyline(latLngs, { color: 'blue' }).addTo(map);
+        } else {
+            console.log("No trip found with ID:", tripId);
+            document.getElementById("tripDate").innerText = "Trip not found!";
+        }
+    }
+    
+    
+    // Run function on page load
+    
+    window.onload = () => {
+        if (typeof L === "undefined") {
+            console.error("Leaflet failed to load!");
+            return;
+        }
+    
+        if (!document.getElementById("map")) {
+            console.error("Map container not found!");
+            return;
+        }
+    
+        loadTripData(); // Now it's safe to load data
+    };
+    
+    
+            </script>
+        
+        <style>
+            .trip-item {
+                border: 1px solid #ddd;
+                padding: 10px;
+                margin: 10px 0;
+                cursor: pointer;
+                background-color: #f9f9f9;
+            }
+        </style> 
+        <h1>User Trips</h1>
+        <div id="map" style="width: 100%; height: 400px;"></div>
+    
+        <div id="tripList"></div>
+        <p><strong>Date:</strong> <span id="tripDate"></span></p>
+        <p><strong>Start Time:</strong> <span id="startTime"></span></p>
+        <p><strong>End Time:</strong> <span id="endTime"></span></p>
+        <p><strong>Total Duration:</strong> <span id="duration"></span></p>
+        <p><strong>Total Distance:</strong> <span id="distance"></span></p>
+        <p><strong>Top Speed:</strong> <span id="topSpeed"></span></p>
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
         </div>
     </main>
 

@@ -141,7 +141,7 @@
 
     <!-- ======================================================================================================================-->
     <main>
-        <script>
+        <!--<script>
             document.addEventListener("DOMContentLoaded",function(){
                 lodedata ();
                 console.log('sa')
@@ -150,7 +150,7 @@
                 deviseId = localStorage.getItem("deviceId");
                 console.log(deviseId);
             }
-        </script>
+        </script>--->
         <div class="title-container">
             <h1>Drive<span class="highlight">Link</span></h1>
             <p>Trip Manage</p>
@@ -169,12 +169,16 @@
                 <p>Top Speed: <span id="topSpeed">0</span> km/h</p>
                 <p>satellites: <span id="satellites"></span></p>
             </div>
-        
+        <br>
+        <br>
             <div class="buttons">
                 <button id="startButton">Start</button>
                 <button id="endButton" disabled>End</button>
                 <button id="reportButton" disabled>Generate Report</button>
-                
+                <br>
+                <br>
+
+            </div>   
                 
                     <script type="module">
 
@@ -186,7 +190,8 @@
                     const app = initializeApp(firebaseConfig);
                     const firestore = getFirestore(app);
                     const db = getDatabase(app);
-                    const userId = "User10";
+                    const userId = deviceId;
+                    
                     
                     
                     let map = L.map('map').setView([0, 0], 13);
@@ -197,8 +202,9 @@
                     let startTime = null, endTime = null, totalDistance = 0, totalDuration = 0, movingDuration = 0, topSpeed = 0;
                     let path = [];
                     let polyline = L.polyline([], { color: 'red' }).addTo(map);
+                    let lastBearing = null;
+                    const minDistanceThreshold = 10; // Minimum distance (meters) between saved points
 
-                    
                     const userRef = ref(db, `${userId}/tracking`);
                     onValue(userRef, (snapshot) => {
                         if (snapshot.exists()) {
@@ -207,8 +213,18 @@
 
                             if (startTime !== null && trackingActive) {
                                 let lastPos = path[path.length - 1];
+
                                 if (lastPos) totalDistance += calculateDistance(lastPos, newPos);
 
+                                /* // ✅ Only save if the new point is at least X meters apart from the last one
+                                if (!lastPos || calculateDistance(lastPos, newPos) > minDistanceThreshold) {
+                                    path.push(newPos);
+                                    batchPath.push({ lat: newPos[0], lon: newPos[1] });
+                                }
+                                if (batchPath.length >= 25) {
+                                    saveBatchToFirestore(batchPath);
+                                    batchPath = [];
+                                } */
                                 let currentTime = new Date().getTime();
                                 totalDuration = (currentTime - startTime) / 1000;
                                 if (data.speed > 0) movingDuration = totalDuration;
@@ -312,7 +328,7 @@
                             document.getElementById("reportButton").addEventListener("click",saveToFirestore);
                         });
                         </script>
-            </div>
+            
             
         </div>
     </main>
