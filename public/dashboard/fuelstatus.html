@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="dashboardstyle.css">
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="../app.js" defer></script>
     <script src="../app.js"></script>
     <script src="dashboard.js" defer></script>
 
@@ -170,16 +171,71 @@
                         <p>Fuel Consumption Rate : </p>
                         <p>Fuel Efficiency (km/L) : </p>
                         <p>Fuel Cost Estimation : </p>
+                        <p><span id="text1">0</span></p>
                     </div>
-                    
-
-
                 </div>
             </div>
         </div>
+        <script type="module">
+
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+            import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+            import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+            let deviceId = localStorage.getItem("deviceId"); // ✅ Change 'const' to 'let'
+
+            console.log(deviceId);
+            let min_value = parseFloat(localStorage.getItem("min_value"));
+            let max_value = parseFloat(localStorage.getItem("max_value"));
+
+
+            const app = initializeApp(firebaseConfig);
+            const firestore = getFirestore(app);
+            const db = getDatabase(app);
+            const userId = deviceId;
+
+            const userRef = ref(db, `${userId}/fuel_sensor`);
+            onValue(userRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    let current_level = data.value;
+
+                    console.log(current_level);
+
+
+                    // ✅ Only update UI if elements exist
+                    if (document.getElementById("text1")) document.getElementById("text1").innerText = data.value;
+
+                    setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 500);
+
+
+                }
+                function updateFuelLevel(min_level, max_level, current_level) {
+                    // Prevent division by zero
+                    if (max_level === min_level) {
+                        console.error("Max level and min level are the same. Cannot calculate fuel level.");
+                        return;
+                    }
+
+                    // Calculate fuel level percentage
+                    let fuel_level = ((current_level - min_level) / (max_level - min_level)) * 100;
+
+                    // Ensure the fuel level stays between 0% and 100%
+                    fuel_level = Math.max(0, Math.min(100, fuel_level));
+
+                    // Update UI elements
+                    const water = document.getElementById("waterLevel");
+                    const text = document.getElementById("fuelText");
+
+                    if (water && text) {
+                        water.style.height = fuel_level + "%";
+                        text.innerText = fuel_level.toFixed(1) + "%"; // Show 1 decimal place
+                    } else {
+                        console.error("UI elements not found: waterLevel or fuelText");
+                    }
+                }
+            });
+        </script>
     </main>
-
-
 </body>
-
 </html>

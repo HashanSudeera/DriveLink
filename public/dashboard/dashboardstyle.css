@@ -556,7 +556,7 @@ h1 {
 
 /* Center button styling */
 .recenter-btn {
-    background: linear-gradient(145deg, #4CAF50, #388E3C); /* Green gradient */
+    background: linear-gradient(145deg, #4CAF50, #388E3C);
     color: white;
     border: none;
     padding: 12px 20px;
@@ -575,7 +575,8 @@ h1 {
 }
 
 .recenter-btn:active {
-    transform: translateY(2px);  /* Button presses down on click */
+    transform: translateY(2px);
+    /* Button presses down on click */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 

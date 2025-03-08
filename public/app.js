@@ -9,15 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (registerButton) {
         registerButton.addEventListener('click', register);
-    } else {
-        console.error("Register button not found! Check if the ID is correct.");
     }
 
     if (loginButton) {
         loginButton.addEventListener('click', loginUser);
-    } else {
-        console.error("Login button not found! Check if the ID is correct.");
-    }
+    } 
     if (googleLoginButton) {
         googleLoginButton.addEventListener('click', googleLogin);
     }
@@ -30,9 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (logoutbutton) {
         logoutbutton.addEventListener('click', logout);
     }
-    else {
-        console.error("Logout button not found! Check if the ID is correct.");
-    }
+    
 
 });
 
@@ -164,8 +158,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                     const deviceId = userData.deviceId;
                     const username = userData.username;
                     const vehicleType = userData.vehicleType; // Get vehicleType
+                    
                     localStorage.setItem("deviceId",deviceId);
-
+                    localStorage.setItem("username", username);
                    
                     // Update UI
                     document.getElementById("device-id").innerText = deviceId;
@@ -179,7 +174,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                         const vehicleData = vehicleSnap.data();
                         min_value = vehicleData.minLevel;
                         max_value = vehicleData.maxLevel;
-                        console.log("Vehicle Data:", vehicleData);
+                        localStorage.setItem("min_value", min_value);
+                        localStorage.setItem("max_value", max_value);
+                      
 
                         document.getElementById("min-id").innerText = min_value;
                         document.getElementById("max-id").innerText = max_value;
@@ -213,8 +210,16 @@ function loadSensorData(deviceId) {
             let lati = data.tracking.longitude;
             localStorage.setItem("latitude",lati) ;
 
-            // Use the correct variable names min_value & max_value
-            setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 100);
+            let battery_level = data.battery.value;
+
+            localStorage.setItem("fuel_level", current_level);
+            localStorage.setItem("battery_level", battery_level);
+            console.log(localStorage);
+
+            setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 5000);
+            setTimeout(() => updateBattery(battery_level), 500);
+            
+
         } else {
             document.getElementById("ultrasonic-value").innerText = "No data available";
             document.getElementById("led-status").innerText = "LED Status: --";
@@ -224,6 +229,7 @@ function loadSensorData(deviceId) {
 
 function logout() {
     firebase.auth().signOut().then(() => {
+        localStorage.clear();
         window.location.href = "../login.html";
 
     }).catch((error) => {
@@ -445,6 +451,45 @@ function updateFuelLevel(min_level, max_level, current_level) {
     } else {
         console.error("UI elements not found: waterLevel or fuelText");
     }
+}
+
+function updateBattery(level) {
+    const charge = document.querySelector(".charge");
+    const batteryPercentage = document.getElementById("battery-percentage");
+    console.log("Updating battery level...");
+
+    // Ensure elements exist
+    if (!charge || !batteryPercentage) {
+        console.error("Error: Battery elements not found in the DOM!");
+        return;
+    }
+
+    // Ensure level is valid
+    if (level === undefined || level === null) {
+        console.error("Error: Battery level is undefined or null.");
+        return;
+    }
+
+    // Calculate battery level
+    let cal_level = (level / 12) * 100;
+    cal_level = Math.max(0, Math.min(cal_level, 100)); // Ensure value is between 0-100
+
+    console.log("Calculated Battery Level:", cal_level);
+
+    // Update battery UI
+    charge.style.height = cal_level + "%";
+
+    if (cal_level <= 25) {
+        charge.style.background = "var(--red)";
+    } else if (cal_level <= 50) {
+        charge.style.background = "var(--orange)";
+    } else if (cal_level <= 75) {
+        charge.style.background = "var(--yellow)";
+    } else {
+        charge.style.background = "var(--green)";
+    }
+
+    batteryPercentage.innerText = `Battery: ${Math.round(cal_level)}%`;
 }
 
 
