@@ -613,7 +613,7 @@ button:hover {
 }
 
 button:nth-child(1) {
-    background-color: rgb(0, 192, 74);
+    background-color:var(--base-clr);
     color: white;
 }
 
