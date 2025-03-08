@@ -4,20 +4,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const loginButton = document.getElementById('login-button');
     const logoutbutton = document.getElementById('logout-button')
     const googleLoginButton = document.getElementById('google-login-button');
-    const completeRegButton  = document.getElementById('complete-registration-button');
-    const googlesiginButton  = document.getElementById('google-singin-button');
+    const completeRegButton = document.getElementById('complete-registration-button');
+    const googlesiginButton = document.getElementById('google-singin-button');
 
     if (registerButton) {
         registerButton.addEventListener('click', register);
-    } else {
-        console.error("Register button not found! Check if the ID is correct.");
     }
 
     if (loginButton) {
         loginButton.addEventListener('click', loginUser);
-    } else {
-        console.error("Login button not found! Check if the ID is correct.");
-    }
+    } 
     if (googleLoginButton) {
         googleLoginButton.addEventListener('click', googleLogin);
     }
@@ -30,9 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (logoutbutton) {
         logoutbutton.addEventListener('click', logout);
     }
-    else {
-        console.error("Logout button not found! Check if the ID is correct.");
-    }
+    
 
 });
 
@@ -56,6 +50,8 @@ if (!firebase.apps.length) {
 var db = firebase.firestore();
 var database = firebase.database();
 
+
+
 // 🛠 Function to Register User
 function register(event) {
     event.preventDefault();
@@ -67,7 +63,6 @@ function register(event) {
     const confirmPassword = document.getElementById('confirm-password').value;
     const deviceId = document.getElementById('device-id').value.trim();
     const vehicleType = document.getElementById('vehicle-type').value.trim();
-    const vehicleModel = document.getElementById('vehicle-model').value.trim();
     const mileage = document.getElementById('mileage').value.trim();
 
     // Basic validation
@@ -93,7 +88,6 @@ function register(event) {
                 email,
                 deviceId,
                 vehicleType,
-                vehicleModel,
                 mileage,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
@@ -139,35 +133,67 @@ function loginUser(event) {
             alert("Login failed: " + error.message);
         });
 }
+let min_value = null;
+let max_value = null;
 
-document.addEventListener("DOMContentLoaded", function () {
+
+document.addEventListener("DOMContentLoaded", async function () {
     if (document.body.id === "dashboardPage") {
-        firebase.auth().onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
-                const userId = user.uid;
-                const userRef = firebase.firestore().collection('users').doc(userId);
+                try {
+                    const userId = user.uid;
+                    const db = firebase.firestore();
 
-                userRef.get().then((doc) => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        const deviceId = userData.deviceId;
-                        const username = userData.username;
-                        document.getElementById("device-id").innerText = deviceId;
-                        document.getElementById("usernametag").innerText = username;
-                        loadSensorData(deviceId);
-                    } else {
+                    // Fetch user data from Firestore
+                    const userRef = db.collection("users").doc(userId);
+                    const userSnap = await userRef.get();
+
+                    if (!userSnap.exists) {
                         console.error("User data not found in Firestore.");
+                        return;
                     }
-                }).catch((error) => {
-                    console.error("Error fetching user data:", error);
-                });
+
+                    const userData = userSnap.data();
+                    const deviceId = userData.deviceId;
+                    const username = userData.username;
+                    const vehicleType = userData.vehicleType; // Get vehicleType
+                    
+                    localStorage.setItem("deviceId",deviceId);
+                    localStorage.setItem("username", username);
+                   
+                    // Update UI
+                    document.getElementById("device-id").innerText = deviceId;
+                    document.getElementById("usernametag").innerText = `Hi, ${username} !`;
+
+                    // Fetch vehicle data using vehicleType
+                    const vehicleRef = db.collection("vehicle").doc(vehicleType);
+                    const vehicleSnap = await vehicleRef.get();
+
+                    if (vehicleSnap.exists) {
+                        const vehicleData = vehicleSnap.data();
+                        min_value = vehicleData.minLevel;
+                        max_value = vehicleData.maxLevel;
+                        localStorage.setItem("min_value", min_value);
+                        localStorage.setItem("max_value", max_value);
+                      
+
+                        document.getElementById("min-id").innerText = min_value;
+                        document.getElementById("max-id").innerText = max_value;
+                    } else {
+                        console.log("No vehicle data found.");
+                    }
+
+                    // Call additional functions
+                    loadSensorData(deviceId);
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                }
             } else {
+                // Redirect if user is not logged in
                 window.location.href = "../login.html";
             }
         });
-    }
-    else {
-        console.log("not dashboard page")
     }
 });
 
@@ -178,6 +204,22 @@ function loadSensorData(deviceId) {
             const data = snapshot.val();
             document.getElementById("ultrasonic-value").innerText = `Distance: ${data.ultrasonic.value} cm`;
             document.getElementById("led-status").innerText = `LED Status: ${data.led_status.value}`;
+
+            // Declare current_level correctly
+            let current_level = data.fuel_sensor.value;
+            let lati = data.tracking.longitude;
+            localStorage.setItem("latitude",lati) ;
+
+            let battery_level = data.battery.value;
+
+            localStorage.setItem("fuel_level", current_level);
+            localStorage.setItem("battery_level", battery_level);
+            console.log(localStorage);
+
+            setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 5000);
+            setTimeout(() => updateBattery(battery_level), 500);
+            
+
         } else {
             document.getElementById("ultrasonic-value").innerText = "No data available";
             document.getElementById("led-status").innerText = "LED Status: --";
@@ -187,6 +229,7 @@ function loadSensorData(deviceId) {
 
 function logout() {
     firebase.auth().signOut().then(() => {
+        localStorage.clear();
         window.location.href = "../login.html";
 
     }).catch((error) => {
@@ -208,7 +251,6 @@ function signInWithGoogle() {
                         const username = prompt("Enter a username:");
                         const deviceId = prompt("Enter your device ID:");
                         const vehicleType = prompt("Enter your vehicle type (motorcycle, van, car, lorry):");
-                        const vehicleModel = prompt("Enter your vehicle model:");
                         const mileage = prompt("Enter your vehicle mileage:");
 
                         return db.collection('users').doc(user.uid).set({
@@ -216,7 +258,6 @@ function signInWithGoogle() {
                             email: user.email,
                             deviceId,
                             vehicleType,
-                            vehicleModel,
                             mileage,
                             timestamp: firebase.firestore.FieldValue.serverTimestamp()
                         });
@@ -251,7 +292,6 @@ function googleSignIn() {
                         email: user.email,
                         deviceId: "N/A",
                         vehicleType: "N/A",
-                        vehicleModel: "N/A",
                         mileage: "N/A",
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     };
@@ -290,7 +330,7 @@ function googleLogin() {
             userRef.get().then((doc) => {
                 if (doc.exists) {
                     console.log("User exists, redirecting to dashboard...");
-                    window.location.href = "dashboard/dashboard.html"; 
+                    window.location.href = "dashboard/dashboard.html";
                 } else {
                     console.log("New user, redirecting to complete profile...");
                     window.location.href = "google.html";
@@ -314,7 +354,6 @@ function completeGoogleRegistration(event) {
     const username = document.getElementById('username').value.trim();
     const deviceId = document.getElementById('device-id').value.trim();
     const vehicleType = document.getElementById('vehicle-type').value.trim();
-    const vehicleModel = document.getElementById('vehicle-model').value.trim();
     const mileage = document.getElementById('mileage').value.trim();
 
     if (!username || !deviceId) {
@@ -327,7 +366,6 @@ function completeGoogleRegistration(event) {
         email: user.email,
         deviceId,
         vehicleType,
-        vehicleModel,
         mileage,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     };
@@ -337,7 +375,7 @@ function completeGoogleRegistration(event) {
         .then(() => {
             console.log("User data saved to Firestore.");
             alert("Registration completed! Redirecting to dashboard...");
-            window.location.href = "dashboard/dashboard.html"; 
+            window.location.href = "dashboard/dashboard.html";
         })
         .catch((error) => {
             console.error("Error saving user data:", error);
@@ -365,7 +403,7 @@ function googlein() {
                 userRef.get().then((doc) => {
                     if (doc.exists) {
                         console.log("User exists, redirecting to dashboard...");
-                        window.location.href = "dashboard/dashboard.html"; 
+                        window.location.href = "dashboard/dashboard.html";
                     } else {
                         console.log("New user, redirecting to complete profile...");
                         window.location.href = "google.html";
@@ -382,4 +420,77 @@ function googlein() {
             alert("Google Login Failed: " + error.message);
         });
 }
+
+
+
+
+
+
+// fuel moniter sections
+
+function updateFuelLevel(min_level, max_level, current_level) {
+    // Prevent division by zero
+    if (max_level === min_level) {
+        console.error("Max level and min level are the same. Cannot calculate fuel level.");
+        return;
+    }
+
+    // Calculate fuel level percentage
+    let fuel_level = ((current_level - min_level) / (max_level - min_level)) * 100;
+
+    // Ensure the fuel level stays between 0% and 100%
+    fuel_level = Math.max(0, Math.min(100, fuel_level));
+
+    // Update UI elements
+    const water = document.getElementById("waterLevel");
+    const text = document.getElementById("fuelText");
+
+    if (water && text) {
+        water.style.height = fuel_level + "%";
+        text.innerText = fuel_level.toFixed(1) + "%"; // Show 1 decimal place
+    } else {
+        console.error("UI elements not found: waterLevel or fuelText");
+    }
+}
+
+function updateBattery(level) {
+    const charge = document.querySelector(".charge");
+    const batteryPercentage = document.getElementById("battery-percentage");
+    console.log("Updating battery level...");
+
+    // Ensure elements exist
+    if (!charge || !batteryPercentage) {
+        console.error("Error: Battery elements not found in the DOM!");
+        return;
+    }
+
+    // Ensure level is valid
+    if (level === undefined || level === null) {
+        console.error("Error: Battery level is undefined or null.");
+        return;
+    }
+
+    // Calculate battery level
+    let cal_level = (level / 12) * 100;
+    cal_level = Math.max(0, Math.min(cal_level, 100)); // Ensure value is between 0-100
+
+    console.log("Calculated Battery Level:", cal_level);
+
+    // Update battery UI
+    charge.style.height = cal_level + "%";
+
+    if (cal_level <= 25) {
+        charge.style.background = "var(--red)";
+    } else if (cal_level <= 50) {
+        charge.style.background = "var(--orange)";
+    } else if (cal_level <= 75) {
+        charge.style.background = "var(--yellow)";
+    } else {
+        charge.style.background = "var(--green)";
+    }
+
+    batteryPercentage.innerText = `Battery: ${Math.round(cal_level)}%`;
+}
+
+
 

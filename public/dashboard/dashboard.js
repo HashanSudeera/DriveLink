@@ -29,3 +29,9 @@ function closeAllSubMenus() {
         ul.previousElementSibling.classList.remove('rotate')
     })
 }
+
+/*trip manger funtions*/
+// Import Firebase
+
+
+

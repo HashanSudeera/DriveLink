@@ -12,6 +12,10 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="../app.js"></script>
     <script src="dashboard.js" defer></script>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+   
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 
 <body id="dashboardPage">
@@ -70,7 +74,7 @@
                 </a>
             </li>
             
-            <li class="active">
+            <li>
                 <a href="batterystatus.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
                         fill="#e3e3e3">
@@ -91,7 +95,8 @@
                 </a>
             </li>
            
-            <li>
+            
+            <li class="active">
                 <a href="tripmange.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
                         fill="#e3e3e3">
@@ -129,7 +134,6 @@
                 </ul>
             </li>
             <li>
-            <li>
                 <a href="profile.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
                         fill="#e3e3e3">
@@ -144,113 +148,196 @@
 
     <!-- ======================================================================================================================-->
     <main>
+        <!--<script>
+            document.addEventListener("DOMContentLoaded",function(){
+                lodedata ();
+                console.log('sa')
+            })
+            function lodedata(){
+                deviseId = localStorage.getItem("deviceId");
+                console.log(deviseId);
+            }
+        </script>--->
         <div class="title-container">
             <h1>Drive<span class="highlight">Link</span></h1>
-            <p>Battery Status</p>
-        </div>
-        <div class="main-container">
-            <div class="box">
-                <div class="battery">
-                    <h2 style="color: #eeeeee;">Battery</h2><br>
-
-                    <div class="battery-head"></div>
-                    <div class="battery-body">
-                        <i class="fas fa-bolt"></i>
-                        <div class="charge"></div>
-                    </div>
-                    <p id="battery-percentage">Battery: 0%</p>
-                   
-                </div>
-            </div>
-            <div class="box">
-                <div class="fuel-details">
-                    <h2>Battery Details</h2>
-                    <div class="sub-cal">
-                        <p>Battery Helth : </p>
-                        <p>Battery Power (W) : </p>
-                        <p>Estimated Battery Life : </p>
-                        <p>Battery Charging Time : </p>
-                    </div>
-
-
-
-                </div>
-            </div>
+            <p>Trip Manage</p>
+            <span id="device-id"></span>
 
         </div>
-        <script type="module">
+        <div class="title-container">
+            <h2>Live Tracking</h2>
+            <div id="map"></div>
+        
+            <div class="info">
+                <p>Speed: <span id="speed">0</span> km/h</p>
+                <p>Distance: <span id="distance">0</span> km</p>
+                <p>Total Duration: <span id="duration">0</span> sec</p>
+                <p>Moving Time: <span id="movingTime">0</span> sec</p>
+                <p>Top Speed: <span id="topSpeed">0</span> km/h</p>
+                <p>satellites: <span id="satellites"></span></p>
+            </div>
+        <br>
+        <br>
+            <div class="buttons">
+                <button id="startButton">Start</button>
+                <button id="endButton" disabled>End</button>
+                <button id="reportButton" disabled>Generate Report</button>
+                <br>
+                <br>
 
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-            import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-            import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+            </div>   
+                
+                    <script type="module">
 
-            let deviceId = localStorage.getItem("deviceId"); // ✅ Change 'const' to 'let'
+                    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+                    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+                    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+                    let deviceId = localStorage.getItem("deviceId"); // ✅ Change 'const' to 'let'
 
-            console.log(deviceId);
+                    const app = initializeApp(firebaseConfig);
+                    const firestore = getFirestore(app);
+                    const db = getDatabase(app);
+                    const userId = deviceId;
+                    
+                    
+                    
+                    let map = L.map('map').setView([0, 0], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                    
+                    let marker = L.marker([0, 0]).addTo(map);
+                    let trackingActive = false;
+                    let startTime = null, endTime = null, totalDistance = 0, totalDuration = 0, movingDuration = 0, topSpeed = 0;
+                    let path = [];
+                    let polyline = L.polyline([], { color: 'red' }).addTo(map);
+                    let lastBearing = null;
+                    const minDistanceThreshold = 10; // Minimum distance (meters) between saved points
+
+                    const userRef = ref(db, `${userId}/tracking`);
+                    onValue(userRef, (snapshot) => {
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            let newPos = [data.latitude, data.longitude];
+
+                            if (startTime !== null && trackingActive) {
+                                let lastPos = path[path.length - 1];
+
+                                if (lastPos) totalDistance += calculateDistance(lastPos, newPos);
+
+                                /* // ✅ Only save if the new point is at least X meters apart from the last one
+                                if (!lastPos || calculateDistance(lastPos, newPos) > minDistanceThreshold) {
+                                    path.push(newPos);
+                                    batchPath.push({ lat: newPos[0], lon: newPos[1] });
+                                }
+                                if (batchPath.length >= 25) {
+                                    saveBatchToFirestore(batchPath);
+                                    batchPath = [];
+                                } */
+                                let currentTime = new Date().getTime();
+                                totalDuration = (currentTime - startTime) / 1000;
+                                if (data.speed > 0) movingDuration = totalDuration;
+                                if (data.speed > topSpeed) topSpeed = data.speed;
+                            }
+
+                            if (trackingActive) {
+                                path.push(newPos);
+                                polyline.setLatLngs(path);
+                            }
+
+                            marker.setLatLng(newPos);
+                            map.setView(newPos);
+
+                            // ✅ Only update UI if elements exist
+                            if (document.getElementById("speed")) document.getElementById("speed").innerText = data.speed.toFixed(2);
+                            if (document.getElementById("satellites")) document.getElementById("satellites").innerText = data.satellites || "N/A";
+                            if (document.getElementById("distance")) document.getElementById("distance").innerText = totalDistance.toFixed(2);
+                            if (document.getElementById("duration")) document.getElementById("duration").innerText = totalDuration.toFixed(2);
+                            if (document.getElementById("movingTime")) document.getElementById("movingTime").innerText = movingDuration.toFixed(2);
+                            if (document.getElementById("topSpeed")) document.getElementById("topSpeed").innerText = topSpeed.toFixed(2);
+                        }
+                    });
 
 
-
-            const app = initializeApp(firebaseConfig);
-            const firestore = getFirestore(app);
-            const db = getDatabase(app);
-            const userId = deviceId;
-
-            const userRef = ref(db, `${userId}/battery`);
-            onValue(userRef, (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    let battery_level = data.value;
-
-                    console.log(battery_level);
-
-
-                    // ✅ Only update UI if elements exist
-                    if (document.getElementById("text1")) document.getElementById("text1").innerText = data.value;
-
-                    setTimeout(() => updateBattery(battery_level), 500);
-
-
-                }
-                function updateBattery(level) {
-                    const charge = document.querySelector(".charge");
-                    const batteryPercentage = document.getElementById("battery-percentage");
-                    console.log("Updating battery level...");
-
-                    // Ensure elements exist
-                    if (!charge || !batteryPercentage) {
-                        console.error("Error: Battery elements not found in the DOM!");
-                        return;
+                    function calculateDistance(latlng1, latlng2) {
+                        const R = 6371; // Earth's radius in km
+                        const dLat = (latlng2[0] - latlng1[0]) * Math.PI / 180;
+                        const dLon = (latlng2[1] - latlng1[1]) * Math.PI / 180;
+                        const a =
+                            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                            Math.cos(latlng1[0] * Math.PI / 180) * Math.cos(latlng2[0] * Math.PI / 180) *
+                            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                        return R * c; // Distance in km
                     }
 
-                    // Ensure level is valid
-                    if (level === undefined || level === null) {
-                        console.error("Error: Battery level is undefined or null.");
-                        return;
+                    
+
+                    // Start Button Click
+                    function startTracking() {
+                        trackingActive = true;
+                        startTime = new Date();
+                        totalDistance = totalDuration = movingDuration = topSpeed = 0;
+                        path = [];
+                        polyline.setLatLngs([]);
+                        
+                        document.getElementById("startButton").disabled = true;
+                        document.getElementById("endButton").disabled = false;
+                        document.getElementById("reportButton").disabled = true;
                     }
 
-                    // Calculate battery level
-                    let cal_level = (level / 12) * 100;
-                    cal_level = Math.max(0, Math.min(cal_level, 100)); // Ensure value is between 0-100
 
-                    console.log("Calculated Battery Level:", cal_level);
+                    // End Button Click
+                    function endTracking() {
+                        trackingActive = false;
+                        endTime = new Date(); // ✅ Convert timestamp to Date object
+                        totalDuration = (endTime - startTime) / 1000; // ✅ Calculate total duration correctly
 
-                    // Update battery UI
-                    charge.style.height = cal_level + "%";
-
-                    if (cal_level <= 25) {
-                        charge.style.background = "var(--red)";
-                    } else if (cal_level <= 50) {
-                        charge.style.background = "var(--orange)";
-                    } else if (cal_level <= 75) {
-                        charge.style.background = "var(--yellow)";
-                    } else {
-                        charge.style.background = "var(--green)";
+                        document.getElementById("startButton").disabled = false;
+                        document.getElementById("endButton").disabled = true;
+                        document.getElementById("reportButton").disabled = false;
                     }
 
-                    batteryPercentage.innerText = `Battery: ${Math.round(cal_level)}%`;
-                }
-            });
-        </script>
+
+                    async function saveToFirestore() {
+                        try {
+                            if (!startTime || !endTime) {
+                                alert("⚠️ Error: Start or end time missing.");
+                                return;
+                            }
+
+                            const tripRef = collection(firestore, `tripReports/${userId}/trips`);
+                            const formattedPath = path.map(coords => ({ lat: coords[0], lon: coords[1] }));
+                              
+                            const tripData = {
+                                distance: totalDistance.toFixed(2) + " km",
+                                duration: totalDuration.toFixed(2) + " sec",
+                                movingTime: movingDuration.toFixed(2) + " sec",
+                                topSpeed: topSpeed.toFixed(2) + " km/h",
+                                timestamp: new Date().toISOString(),
+                                startTime: startTime.toISOString(),
+                                endTime: endTime.toISOString(), // ✅ Now correctly formatted
+                                tripDate: startTime.toISOString().split("T")[0],
+                                route: formattedPath,
+                            };
+
+                            await addDoc(tripRef, tripData);
+                            alert("✅ Trip report saved to Firestore!");
+                        } catch (error) {
+                            console.error("❌ Error saving to Firestore: ", error);
+                            alert("❌ Failed to save. Check console.");
+                        }
+                    }
+
+              
+                       // Add event listeners after the page loads
+                        document.addEventListener("DOMContentLoaded", () => {
+                            document.getElementById("startButton").addEventListener("click", startTracking);
+                            document.getElementById("endButton").addEventListener("click", endTracking);
+                            document.getElementById("reportButton").addEventListener("click",saveToFirestore);
+                        });
+                        </script>
+            
+            
+        </div>
     </main>
 
 
