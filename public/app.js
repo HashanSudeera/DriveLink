@@ -216,7 +216,7 @@ function loadSensorData(deviceId) {
 
             //fuelandbattery()
             // Use the correct variable names min_value & max_value
-            setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 500);
+            setTimeout(() => updateFuelLevel(min_value, max_value, current_level), 5000);
             setTimeout(() => updateBattery(battery_level), 500);
 
 
