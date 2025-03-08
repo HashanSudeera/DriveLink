@@ -140,19 +140,9 @@
         <div>
             <script type="module">
                 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+                import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
     
-    // Firebase Config
-    var firebaseConfig = {
-        apiKey: "AIzaSyAa9bahojYMk_1meGG8YCgUDFNj6MEHPeI",
-        authDomain: "espclientsnew.firebaseapp.com",
-        databaseURL: "https://espclientsnew-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "espclientsnew",
-        storageBucket: "espclientsnew.firebasestorage.app",
-        messagingSenderId: "196283041268",
-        appId: "1:196283041268:web:6f24e1202238bf01fea5a1"
-    };
-    
+       
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     
@@ -161,10 +151,12 @@
         const tripId = urlParams.get("tripId");
     
         console.log("Fetching trip data for:", tripId);
-    
-        const tripRef = doc(db, "tripReports", "User10", "trips", tripId);
-        const snapshot = await getDoc(tripRef);
-    
+        const deviceId = localStorage.getItem("deviceId");
+        console.log(deviceId);
+        console.log(tripId);
+        const tripRef = collection(db, `tripReports/${deviceId}/trips`);
+        const snapshot = await getDocs(tripRef);
+
         if (snapshot.exists()) {
             const data = snapshot.data();
             console.log("Fetched Data:", data);
@@ -186,6 +178,7 @@
             
             const latLngs = data.route.map(point => [point.lat, point.lon]);
             L.polyline(latLngs, { color: 'blue' }).addTo(map);
+            
         } else {
             console.log("No trip found with ID:", tripId);
             document.getElementById("tripDate").innerText = "Trip not found!";

@@ -122,22 +122,14 @@
             <script type="module">
                 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
                 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-        
-                var firebaseConfig = {
-                    apiKey: "AIzaSyAa9bahojYMk_1meGG8YCgUDFNj6MEHPeI",
-                    authDomain: "espclientsnew.firebaseapp.com",
-                    databaseURL: "https://espclientsnew-default-rtdb.asia-southeast1.firebasedatabase.app",
-                    projectId: "espclientsnew",
-                    storageBucket: "espclientsnew.firebasestorage.app",
-                    messagingSenderId: "196283041268",
-                    appId: "1:196283041268:web:6f24e1202238bf01fea5a1"
-                };
-        
+                
                 const app = initializeApp(firebaseConfig);
                 const db = getFirestore(app);
-        
+                
+                const deviceId = localStorage.getItem("deviceId");
+                console.log(deviceId);
                 async function loadTripReports() {
-                    const tripRef = collection(db, "tripReports", "User10", "trips");
+                    const tripRef = collection(db, `tripReports/${deviceId}/trips`);
                     const snapshot = await getDocs(tripRef);
                     const tripContainer = document.getElementById("tripList");
                     let tripNumber = 1;
@@ -174,7 +166,7 @@
                     
                 }
             </style>
-            <h1>User10's Trip Reports</h1>
+            <h1><span id="device-id">--</span>'s Trip Reports</h1>
             <div id="tripList"></div>
         </div>
     </main>
