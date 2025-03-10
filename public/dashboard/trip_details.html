@@ -140,7 +140,10 @@
         <div>
             <script type="module">
                 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-                import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+                import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+                import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+           
+            
     
        
     const app = initializeApp(firebaseConfig);
@@ -154,8 +157,18 @@
         const deviceId = localStorage.getItem("deviceId");
         console.log(deviceId);
         console.log(tripId);
-        const tripRef = collection(db, `tripReports/${deviceId}/trips`);
-        const snapshot = await getDocs(tripRef);
+        const tripRef = doc(db, "tripReports", deviceId, "trips", tripId);
+        const snapshot = await getDoc(tripRef);
+        console.log(tripRef);
+       
+        if (snapshot.exists()) {
+            const data = snapshot.data();
+            console.log("Fetched Data:", data);
+            document.getElementById("tripDate").innerText = data.tripDate || "N/A";
+            document.getElementById("startTime").innerText = data.startTime || "N/A";
+        } else {
+            console.log("No trip data found.");
+        }
 
         if (snapshot.exists()) {
             const data = snapshot.data();
